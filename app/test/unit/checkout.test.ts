@@ -27,6 +27,15 @@ test("SAVE10 takes 10% off the order", () => {
   });
 });
 
+test("discounts apply to the subtotal only, not shipping", () => {
+  assert.deepEqual(calculateTotals([mug], "SAVE10"), {
+    subtotal: 12,
+    shipping: 5,
+    discount: 1.2,
+    total: 15.8,
+  });
+});
+
 test("discount codes are case-insensitive", () => {
   assert.equal(calculateTotals([hoodie, stickers], "save10").discount, 5.1);
 });
