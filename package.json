@@ -1,5 +1,5 @@
 {
-  "name": "kube-shop",
+  "name": "plushie-shop",
   "private": true,
   "type": "module",
   "engines": { "node": ">=22.18" },

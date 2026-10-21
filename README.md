@@ -23,7 +23,7 @@ The output of each agent is the next agent's input.
 ## What's in the repo
 
 ```
-app/            Kube Shop: zero-dependency Node 22 app (node:http + static HTML)
+app/            Plushie Shop: zero-dependency Node 22 app (node:http + static HTML)
 tests/api       Postman collections (newman)
 tests/e2e       Playwright specs
 tests/load      k6 script

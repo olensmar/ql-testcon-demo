@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "Kube Shop – Checkout API",
+    "name": "Plushie Shop – Checkout API",
     "description": "Checkout totals: subtotal, shipping and total",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -45,7 +45,7 @@
       }
     },
     {
-      "name": "Add mug ($12)",
+      "name": "Add gopher ($12)",
       "event": [
         {
           "listen": "test",
@@ -79,12 +79,12 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"productId\":\"kube-mug\"}"
+          "raw": "{\"productId\":\"gopher\"}"
         }
       }
     },
     {
-      "name": "Add cap ($18)",
+      "name": "Add octopus ($18)",
       "event": [
         {
           "listen": "test",
@@ -118,7 +118,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"productId\":\"cluster-cap\"}"
+          "raw": "{\"productId\":\"octopus\"}"
         }
       }
     },
@@ -197,7 +197,7 @@
       }
     },
     {
-      "name": "Add hoodie ($45)",
+      "name": "Add bear ($45)",
       "event": [
         {
           "listen": "test",
@@ -231,12 +231,12 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"productId\":\"helm-hoodie\"}"
+          "raw": "{\"productId\":\"teddy-bear\"}"
         }
       }
     },
     {
-      "name": "Add stickers ($6)",
+      "name": "Add penguin ($6)",
       "event": [
         {
           "listen": "test",
@@ -270,7 +270,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"productId\":\"pod-stickers\"}"
+          "raw": "{\"productId\":\"mini-penguin\"}"
         }
       }
     },

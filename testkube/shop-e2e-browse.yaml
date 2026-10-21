@@ -21,6 +21,12 @@ spec:
       type: string
       default: ""
       description: Pull request number that triggered this run (for traceability)
+    chaos:
+      type: string
+      default: "off"
+      description: >-
+        Fault injection. "odd" or "even" adds 3s of catalog latency on odd or even execution
+        numbers, simulating an intermittently slow upstream. "off" disables it.
   execution:
     tags:
       pr: "{{config.pr}}"
@@ -36,6 +42,9 @@ spec:
       transfer:
         - from: /data/repo/app
           to: /app
+      env:
+        - name: CATALOG_LATENCY_MS
+          value: "{{ config.chaos != 'off' && int(execution.number) % 2 == (config.chaos == 'odd' ? 1 : 0) ? 3000 : 0 }}"
       shell: node /app/src/server.ts
       readinessProbe:
         httpGet:

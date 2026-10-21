@@ -14,8 +14,8 @@ export const options = {
 
 export default function () {
   const cart = http.post(`${BASE_URL}/api/cart`, null, json).json();
-  http.post(`${BASE_URL}/api/cart/${cart.id}/items`, JSON.stringify({ productId: "kube-mug" }), json);
-  http.post(`${BASE_URL}/api/cart/${cart.id}/items`, JSON.stringify({ productId: "cluster-cap" }), json);
+  http.post(`${BASE_URL}/api/cart/${cart.id}/items`, JSON.stringify({ productId: "gopher" }), json);
+  http.post(`${BASE_URL}/api/cart/${cart.id}/items`, JSON.stringify({ productId: "octopus" }), json);
   const res = http.post(`${BASE_URL}/api/checkout`, JSON.stringify({ cartId: cart.id }), json);
   check(res, {
     "checkout returns 200": (r) => r.status === 200,

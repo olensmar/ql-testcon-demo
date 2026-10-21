@@ -5,10 +5,10 @@ export interface Product {
 }
 
 export const products: Product[] = [
-  { id: "kube-mug", name: "Kube Mug", price: 12.0 },
-  { id: "cluster-cap", name: "Cluster Cap", price: 18.0 },
-  { id: "helm-hoodie", name: "Helm Hoodie", price: 45.0 },
-  { id: "pod-stickers", name: "Pod Stickers", price: 6.0 },
+  { id: "gopher", name: "Gopher Plushie", price: 12.0 },
+  { id: "octopus", name: "Octopus Plushie", price: 18.0 },
+  { id: "teddy-bear", name: "Giant Teddy Bear", price: 45.0 },
+  { id: "mini-penguin", name: "Mini Penguin", price: 6.0 },
 ];
 
 export function findProduct(id: string): Product | undefined {

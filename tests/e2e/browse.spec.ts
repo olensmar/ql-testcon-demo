@@ -4,14 +4,14 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
 });
 
-test("shows the product catalog", async ({ page }) => {
-  await expect(page.getByTestId("product-list").locator(".card")).toHaveCount(4);
-  await expect(page.getByTestId("product-kube-mug")).toContainText("$12.00");
+test("renders the product catalog within 2 seconds", async ({ page }) => {
+  await expect(page.getByTestId("product-list").locator(".card")).toHaveCount(4, { timeout: 2_000 });
+  await expect(page.getByTestId("product-gopher")).toContainText("$12.00");
 });
 
 test("adding products updates the cart badge", async ({ page }) => {
-  await page.getByTestId("add-kube-mug").click();
-  await page.getByTestId("add-pod-stickers").click();
+  await page.getByTestId("add-gopher").click();
+  await page.getByTestId("add-mini-penguin").click();
   await expect(page.getByTestId("cart-count")).toHaveText("2");
   await expect(page.getByTestId("cart-subtotal")).toHaveText("$18.00");
 });

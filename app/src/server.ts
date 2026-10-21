@@ -7,12 +7,17 @@ import { calculateTotals } from "./checkout.ts";
 
 const PORT = Number(process.env.PORT ?? 3000);
 const PUBLIC_DIR = join(import.meta.dirname, "..", "public");
+// Simulated response time of the upstream catalog service, in ms (fault injection for demos).
+const CATALOG_LATENCY_MS = Number(process.env.CATALOG_LATENCY_MS ?? 0);
 
 type Handler = (req: IncomingMessage, body: any, params: string[]) => unknown;
 
 const routes: Array<[method: string, pattern: RegExp, handler: Handler]> = [
   ["GET", /^\/healthz$/, () => ({ status: "ok" })],
-  ["GET", /^\/api\/products$/, () => products],
+  ["GET", /^\/api\/products$/, async () => {
+    if (CATALOG_LATENCY_MS > 0) await new Promise((r) => setTimeout(r, CATALOG_LATENCY_MS));
+    return products;
+  }],
   ["POST", /^\/api\/cart$/, () => createCart()],
   [
     "GET",
@@ -75,4 +80,7 @@ const server = createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => console.log(`kube-shop listening on :${PORT}`));
+server.listen(PORT, () => {
+  const latency = CATALOG_LATENCY_MS > 0 ? ` (catalog latency ${CATALOG_LATENCY_MS}ms)` : "";
+  console.log(`plushie-shop listening on :${PORT}${latency}`);
+});

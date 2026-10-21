@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "Kube Shop – Cart API",
+    "name": "Plushie Shop – Cart API",
     "description": "Catalog and cart endpoints",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -80,7 +80,7 @@
       }
     },
     {
-      "name": "Add 2 mugs",
+      "name": "Add 2 gophers",
       "event": [
         {
           "listen": "test",
@@ -88,7 +88,7 @@
             "type": "text/javascript",
             "exec": [
               "pm.test(\"returns 200\", () => pm.response.to.have.status(200));",
-              "pm.test(\"cart has 2 mugs\", () => pm.expect(pm.response.json().items[0].quantity).to.eql(2));"
+              "pm.test(\"cart has 2 gophers\", () => pm.expect(pm.response.json().items[0].quantity).to.eql(2));"
             ]
           }
         }
@@ -115,12 +115,12 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"productId\":\"kube-mug\",\"quantity\":2}"
+          "raw": "{\"productId\":\"gopher\",\"quantity\":2}"
         }
       }
     },
     {
-      "name": "Add one more mug",
+      "name": "Add one more gopher",
       "event": [
         {
           "listen": "test",
@@ -154,7 +154,7 @@
         },
         "body": {
           "mode": "raw",
-          "raw": "{\"productId\":\"kube-mug\"}"
+          "raw": "{\"productId\":\"gopher\"}"
         }
       }
     },

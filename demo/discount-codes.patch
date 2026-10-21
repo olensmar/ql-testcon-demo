@@ -91,17 +91,17 @@ diff --git a/app/test/unit/checkout.test.ts b/app/test/unit/checkout.test.ts
 index f8c440b..d22c3ee 100644
 --- a/app/test/unit/checkout.test.ts
 +++ b/app/test/unit/checkout.test.ts
-@@ -7,13 +7,30 @@ const stickers = { productId: "pod-stickers", name: "Pod Stickers", price: 6, qu
- const mug = { productId: "kube-mug", name: "Kube Mug", price: 12, quantity: 1 };
+@@ -7,13 +7,30 @@ const penguin = { productId: "mini-penguin", name: "Mini Penguin", price: 6, qu
+ const gopher = { productId: "gopher", name: "Gopher Plushie", price: 12, quantity: 1 };
  
  test("orders of $50 or more ship free", () => {
--  assert.deepEqual(calculateTotals([hoodie, stickers]), { subtotal: 51, shipping: 0, total: 51 });
-+  assert.deepEqual(calculateTotals([hoodie, stickers]), { subtotal: 51, shipping: 0, discount: 0, total: 51 });
+-  assert.deepEqual(calculateTotals([bear, penguin]), { subtotal: 51, shipping: 0, total: 51 });
++  assert.deepEqual(calculateTotals([bear, penguin]), { subtotal: 51, shipping: 0, discount: 0, total: 51 });
  });
  
  test("orders under $50 pay a $5 shipping fee", () => {
--  assert.deepEqual(calculateTotals([mug]), { subtotal: 12, shipping: 5, total: 17 });
-+  assert.deepEqual(calculateTotals([mug]), { subtotal: 12, shipping: 5, discount: 0, total: 17 });
+-  assert.deepEqual(calculateTotals([gopher]), { subtotal: 12, shipping: 5, total: 17 });
++  assert.deepEqual(calculateTotals([gopher]), { subtotal: 12, shipping: 5, discount: 0, total: 17 });
  });
  
  test("an empty cart cannot be checked out", () => {
@@ -109,7 +109,7 @@ index f8c440b..d22c3ee 100644
  });
 +
 +test("SAVE10 takes 10% off the order", () => {
-+  assert.deepEqual(calculateTotals([hoodie, stickers], "SAVE10"), {
++  assert.deepEqual(calculateTotals([bear, penguin], "SAVE10"), {
 +    subtotal: 51,
 +    shipping: 0,
 +    discount: 5.1,
@@ -118,11 +118,11 @@ index f8c440b..d22c3ee 100644
 +});
 +
 +test("discount codes are case-insensitive", () => {
-+  assert.equal(calculateTotals([hoodie, stickers], "save10").discount, 5.1);
++  assert.equal(calculateTotals([bear, penguin], "save10").discount, 5.1);
 +});
 +
 +test("unknown discount codes are rejected", () => {
-+  assert.throws(() => calculateTotals([hoodie], "FREESTUFF"), /invalid discount code/);
++  assert.throws(() => calculateTotals([bear], "FREESTUFF"), /invalid discount code/);
 +});
 diff --git a/tests/api/checkout.postman_collection.json b/tests/api/checkout.postman_collection.json
 index 8d250de..a0fd544 100644
@@ -131,8 +131,8 @@ index 8d250de..a0fd544 100644
 @@ -1,6 +1,6 @@
  {
    "info": {
--    "name": "Kube Shop – Checkout API",
-+    "name": "Kube Shop \u2013 Checkout API",
+-    "name": "Plushie Shop – Checkout API",
++    "name": "Plushie Shop \u2013 Checkout API",
      "description": "Checkout totals: subtotal, shipping and total",
      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
    },
@@ -232,7 +232,7 @@ index 1ea50c0..45368ea 100644
  });
 +
 +test("SAVE10 takes 10% off the subtotal", async ({ page }) => {
-+  await addToCart(page, "kube-mug", "cluster-cap");
++  await addToCart(page, "gopher", "octopus");
 +  await page.getByTestId("discount-input").fill("SAVE10");
 +  await page.getByTestId("checkout-button").click();
 +  await expect(page.getByTestId("order-subtotal")).toHaveText("$30.00");
@@ -242,7 +242,7 @@ index 1ea50c0..45368ea 100644
 +});
 +
 +test("an invalid discount code shows an error", async ({ page }) => {
-+  await addToCart(page, "kube-mug");
++  await addToCart(page, "gopher");
 +  await page.getByTestId("discount-input").fill("FREESTUFF");
 +  await page.getByTestId("checkout-button").click();
 +  await expect(page.getByTestId("error")).toHaveText("invalid discount code FREESTUFF");
