@@ -77,8 +77,12 @@
       $("checkout-button").disabled = count === 0;
     }
 
+    let cartIdPromise;
+
     async function addToCart(productId) {
-      cartId ??= (await api("POST", "/api/cart")).id;
+      // Share one pending create-cart request so rapid clicks don't each create a cart.
+      cartIdPromise ??= api("POST", "/api/cart").then((c) => c.id);
+      cartId = await cartIdPromise;
       renderCart(await api("POST", `/api/cart/${cartId}/items`, { productId }));
     }
 
