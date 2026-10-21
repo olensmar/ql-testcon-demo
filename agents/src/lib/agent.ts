@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { query, type EffortLevel } from "@anthropic-ai/claude-agent-sdk";
+import { query, type EffortLevel, type ModelUsage } from "@anthropic-ai/claude-agent-sdk";
 import { z } from "zod";
 import { testkubeMcpServer } from "./testkube.ts";
 import { AgentLog } from "./ui.ts";
@@ -33,7 +33,14 @@ export interface AgentResult<T> {
 }
 
 /** Every agent session started in this process, for the run manifest. */
-export const sessions: Array<{ agent: string; sessionId: string; cwd: string; durationMs: number; costUsd: number }> = [];
+export const sessions: Array<{
+  agent: string;
+  sessionId: string;
+  cwd: string;
+  durationMs: number;
+  costUsd: number;
+  modelUsage: Record<string, ModelUsage>;
+}> = [];
 
 const PROMPT_DIR = join(import.meta.dirname, "..", "prompts");
 
@@ -91,7 +98,14 @@ export async function runAgent<T>(spec: AgentSpec<T>): Promise<AgentResult<T>> {
       const output = spec.schema.parse(message.structured_output);
       const cwd = spec.cwd ?? process.cwd();
       const agent = spec.qualifier ? `${spec.name}:${spec.qualifier}` : spec.name;
-      sessions.push({ agent, sessionId: message.session_id, cwd, durationMs: message.duration_ms, costUsd: message.total_cost_usd });
+      sessions.push({
+        agent,
+        sessionId: message.session_id,
+        cwd,
+        durationMs: message.duration_ms,
+        costUsd: message.total_cost_usd,
+        modelUsage: message.modelUsage,
+      });
       log.info(`done in ${(message.duration_ms / 1000).toFixed(1)}s · ${message.num_turns} turns · session ${message.session_id}`);
       return {
         output,

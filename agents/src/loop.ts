@@ -18,6 +18,7 @@ import * as github from "./lib/github.ts";
 import type { ExecutionReport, RemediationReport, TestPlan, TriageReport } from "./lib/schemas.ts";
 import { connectTestkube } from "./lib/testkube.ts";
 import { sessions } from "./lib/agent.ts";
+import { buildSpend, printSpend, spendMarkdown, type SpendReport } from "./lib/spend.ts";
 import { mkdir, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { AgentLog, banner, colors as c, statusIcon } from "./lib/ui.ts";
@@ -30,11 +31,8 @@ type Execution = ExecutionReport["executions"][number] & { url?: string };
 
 async function runLoop(prNumber: number) {
   const started = Date.now();
-  const costs: Record<string, number> = {};
-  const track = <T>(name: string, r: { output: T; costUsd: number }) => {
-    costs[name] = (costs[name] ?? 0) + r.costUsd;
-    return r.output;
-  };
+  // Agent outputs; tokens and cost are collected per session in lib/agent.ts.
+  const track = <T>(_name: string, r: { output: T }) => r.output;
 
   const pr = await github.getPr(prNumber);
   const diff = await github.getPrDiff(prNumber);
@@ -108,23 +106,28 @@ async function runLoop(prNumber: number) {
     await reportGate(pr, headSha, { plan, initialRun: initial, triage, remediation, verificationRun: verification }),
   );
   const passed = gate.verdict === "pass";
+  const spend = buildSpend(sessions);
   await github.setStatus(headSha, passed ? "success" : "failure", gate.headline, pr.url);
-  await github.comment(pr.number, `## ${passed ? "✅" : "❌"} Quality gate: ${gate.headline}\n\n${gate.summary}`);
+  await github.comment(
+    pr.number,
+    `## ${passed ? "✅" : "❌"} Quality gate: ${gate.headline}\n\n${gate.summary}\n\n${spendMarkdown(spend)}`,
+  );
   (passed ? log.ok : log.fail).call(log, `${gate.verdict.toUpperCase()} · confidence ${gate.confidence}% · ${gate.headline}`);
 
-  const manifest = await writeManifest(pr.number);
+  const manifest = await writeManifest(pr.number, spend);
   log.info(`agent sessions: ${manifest}`);
 
-  const total = Object.values(costs).reduce((a, b) => a + b, 0);
-  const breakdown = Object.entries(costs).map(([k, v]) => `${k} $${v.toFixed(2)}`).join(" · ");
+  printSpend(spend);
+  const tokens = spend.totals.input + spend.totals.cacheRead + spend.totals.cacheWrite + spend.totals.output;
   banner(
-    `Done in ${((Date.now() - started) / 1000).toFixed(0)}s`,
-    `agent cost $${total.toFixed(2)} (${breakdown}) · ${pr.url}`,
+    `Done in ${((Date.now() - started) / 1000).toFixed(0)}s · AI spend $${spend.totals.costUsd.toFixed(2)}`,
+    `${(tokens / 1000).toFixed(0)}k tokens · ${sessions.length} agent sessions · ${pr.url}`,
   );
+  sessions.length = 0; // watch mode: the next PR starts fresh
 }
 
 /** Writes runs/pr-<n>.json: which agent ran in which Claude Code session, and where its transcript is. */
-async function writeManifest(prNumber: number): Promise<string> {
+async function writeManifest(prNumber: number, spend: SpendReport): Promise<string> {
   const dir = join(REPO_ROOT, "runs");
   await mkdir(dir, { recursive: true });
   const file = join(dir, `pr-${prNumber}.json`);
@@ -133,8 +136,8 @@ async function writeManifest(prNumber: number): Promise<string> {
     transcript: join(homedir(), ".claude", "projects", s.cwd.replace(/[^a-zA-Z0-9]/g, "-"), `${s.sessionId}.jsonl`),
     resume: `cd ${s.cwd} && claude --resume ${s.sessionId}`,
   }));
-  await writeFile(file, JSON.stringify({ pr: prNumber, finishedAt: new Date().toISOString(), sessions: entries }, null, 2) + "\n");
-  sessions.length = 0; // watch mode: the next PR gets its own manifest
+  const manifest = { pr: prNumber, finishedAt: new Date().toISOString(), spend, sessions: entries };
+  await writeFile(file, JSON.stringify(manifest, null, 2) + "\n");
   return file;
 }
 
