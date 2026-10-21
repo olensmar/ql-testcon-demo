@@ -12,8 +12,7 @@ export const tk = (...tools: string[]) => tools.map((t) => `mcp__${TESTKUBE}__${
 /**
  * Testkube MCP connection. By default spawns the local stdio server (`testkube mcp serve`),
  * which reuses the authenticated CLI context. Set TK_ACCESS_TOKEN, TK_ORG_ID and TK_ENV_ID to
- * use the hosted endpoint instead. Note: Insights boards need a user session (stdio/OAuth),
- * API tokens cannot create them.
+ * use the hosted endpoint instead.
  */
 function hostedUrl(): string | undefined {
   const { TK_ACCESS_TOKEN, TK_ORG_ID, TK_ENV_ID } = process.env;

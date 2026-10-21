@@ -25,7 +25,6 @@ export function triageFailure(
         "list_artifacts",
         "read_artifact",
         "query_executions",
-        "update_execution_tags",
       ),
     ],
     schema: TriageReport,

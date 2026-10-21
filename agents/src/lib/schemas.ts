@@ -55,6 +55,5 @@ export const GateReport = z.object({
   confidence: z.number().min(0).max(100).describe("Release confidence for this PR, 0-100"),
   headline: z.string().describe("One line, shown as the commit status description (max 120 chars)"),
   summary: z.string().describe("Markdown summary for the final PR comment"),
-  boardUrl: z.string().describe("Testkube Insights board URL, or empty string"),
 });
 export type GateReport = z.infer<typeof GateReport>;

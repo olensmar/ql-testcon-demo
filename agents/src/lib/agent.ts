@@ -31,6 +31,12 @@ export interface AgentResult<T> {
 
 const PROMPT_DIR = join(import.meta.dirname, "..", "prompts");
 
+/** JSON Schema for structured output; the CLI rejects zod's `$schema` dialect marker. */
+function jsonSchema(schema: z.ZodType): Record<string, unknown> {
+  const { $schema: _, ...rest } = z.toJSONSchema(schema) as Record<string, unknown>;
+  return rest;
+}
+
 export async function runAgent<T>(spec: AgentSpec<T>): Promise<AgentResult<T>> {
   const log = new AgentLog(spec.name, spec.qualifier);
   const systemPrompt = await readFile(join(PROMPT_DIR, `${spec.name}.md`), "utf8");
@@ -44,11 +50,15 @@ export async function runAgent<T>(spec: AgentSpec<T>): Promise<AgentResult<T>> {
       tools: spec.tools,
       allowedTools: spec.allowedTools,
       permissionMode: "dontAsk",
+      // Only the Testkube server configured here: no project/user MCP config and no
+      // claude.ai account connectors, so every agent uses the same, allow-listed tools.
       mcpServers: testkubeMcpServer(),
+      strictMcpConfig: true,
+      env: { ...process.env, ENABLE_CLAUDEAI_MCP_SERVERS: "false" },
       settingSources: [],
       cwd: spec.cwd,
       maxTurns: spec.maxTurns,
-      outputFormat: { type: "json_schema", schema: z.toJSONSchema(spec.schema) as Record<string, unknown> },
+      outputFormat: { type: "json_schema", schema: jsonSchema(spec.schema) },
     },
   });
 

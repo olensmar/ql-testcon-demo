@@ -9,9 +9,9 @@ export function reportGate(pr: PullRequest, headSha: string, loopSummary: unknow
     model: "claude-sonnet-5-5",
     effort: "low",
     tools: [],
-    allowedTools: tk("query_executions", "get_execution_info", "create_board", "add_board_report", "build_dashboard_url"),
+    allowedTools: tk("query_executions", "get_execution_info"),
     schema: GateReport,
-    maxTurns: 14,
+    maxTurns: 10,
     prompt: `Produce the quality gate verdict for PR #${pr.number} "${pr.title}".
 
 Current head revision: ${headSha} (short: ${headSha.slice(0, 7)})

@@ -63,6 +63,7 @@ async function runLoop(prNumber: number) {
     const results = await Promise.all(failures.map((f) => triageFailure(pr, diff, f, worktree)));
     triage = results.map((r) => track("triage", r));
     for (const t of triage) printTriage(t);
+    await tagTriage(triage);
     await github.comment(pr.number, triageComment(triage, initial));
 
     // 4 · Remediate -------------------------------------------------------------------------
@@ -93,10 +94,9 @@ async function runLoop(prNumber: number) {
     await reportGate(pr, headSha, { plan, initialRun: initial, triage, remediation, verificationRun: verification }),
   );
   const passed = gate.verdict === "pass";
-  await github.setStatus(headSha, passed ? "success" : "failure", gate.headline, gate.boardUrl || pr.url);
+  await github.setStatus(headSha, passed ? "success" : "failure", gate.headline, pr.url);
   await github.comment(pr.number, `## ${passed ? "✅" : "❌"} Quality gate: ${gate.headline}\n\n${gate.summary}`);
   (passed ? log.ok : log.fail).call(log, `${gate.verdict.toUpperCase()} · confidence ${gate.confidence}% · ${gate.headline}`);
-  if (gate.boardUrl) log.info(`board: ${gate.boardUrl}`);
 
   const total = Object.values(costs).reduce((a, b) => a + b, 0);
   const breakdown = Object.entries(costs).map(([k, v]) => `${k} $${v.toFixed(2)}`).join(" · ");
@@ -115,7 +115,26 @@ async function prepareWorktree(pr: github.PullRequest): Promise<string> {
   return dir;
 }
 
+/** Records each triage verdict on its execution in Testkube (tags are replaced, so merge). */
+async function tagTriage(reports: TriageReport[]) {
+  const testkube = await connectTestkube();
+  try {
+    for (const t of reports) {
+      const info = await testkube.call("get_execution_info", { executionId: t.executionId });
+      const tags = { ...info.tags, triage: t.classification };
+      await testkube.call("update_execution_tags", { executionId: t.executionId, tags });
+      new AgentLog("triage", t.workflow).info(`🏷  tagged ${info.name} triage=${t.classification}`);
+    }
+  } finally {
+    await testkube.close();
+  }
+}
+
 async function withUrls(report: ExecutionReport): Promise<Execution[]> {
+  const missing = report.executions.filter((e) => !e.executionId);
+  if (missing.length > 0) {
+    throw new Error(`executor did not start: ${missing.map((e) => `${e.workflow} (${e.note})`).join(", ")}`);
+  }
   const testkube = await connectTestkube();
   try {
     return await Promise.all(
