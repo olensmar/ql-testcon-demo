@@ -1,0 +1,56 @@
+kind: TestWorkflow
+apiVersion: testworkflows.testkube.io/v1
+metadata:
+  name: shop-api-cart
+  namespace: testkube
+  labels:
+    demo: testcon
+    type: api
+    service: cart
+description: >-
+  Postman/newman API tests for the catalog and cart endpoints
+  (GET /api/products, POST /api/cart, POST /api/cart/:id/items, GET /api/cart/:id).
+  Covers app/src/catalog.ts and app/src/cart.ts. Runs against an ephemeral copy of the app
+  started from source at the given revision.
+spec:
+  config:
+    revision:
+      type: string
+      default: main
+      description: Git branch or commit SHA of github.com/olensmar/ql-testcon-demo to test
+    pr:
+      type: string
+      default: ""
+      description: Pull request number that triggered this run (for traceability)
+  execution:
+    tags:
+      pr: "{{config.pr}}"
+      revision: "{{config.revision}}"
+  content:
+    git:
+      uri: https://github.com/olensmar/ql-testcon-demo
+      revision: "{{config.revision}}"
+      paths: [app, tests/api]
+  services:
+    shop:
+      image: node:22-alpine
+      transfer:
+        - from: /data/repo/app
+          to: /app
+      shell: node /app/src/server.ts
+      readinessProbe:
+        httpGet:
+          path: /healthz
+          port: 3000
+        periodSeconds: 1
+  steps:
+    - name: Run cart API tests
+      workingDir: /data/repo/tests/api
+      run:
+        image: postman/newman:6-alpine
+        shell: >-
+          newman run cart.postman_collection.json
+          --env-var baseUrl=http://{{services.shop.0.ip}}:3000
+          --reporters cli,junit --reporter-junit-export /data/artifacts/junit.xml
+      artifacts:
+        paths: ["/data/artifacts/**"]

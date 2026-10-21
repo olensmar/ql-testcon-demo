@@ -1,0 +1,84 @@
+kind: TestWorkflow
+apiVersion: testworkflows.testkube.io/v1
+metadata:
+  name: shop-load-checkout
+  namespace: testkube
+  labels:
+    demo: testcon
+    type: load
+    service: checkout
+description: >-
+  Distributed k6 load test of the cart + checkout API path (POST /api/cart, /items, /api/checkout)
+  with p95 latency and error-rate thresholds. Load is split across parallel Kubernetes pods
+  (config.workers). Runs against an ephemeral copy of the app started from source at the given revision.
+spec:
+  config:
+    revision:
+      type: string
+      default: main
+      description: Git branch or commit SHA of github.com/olensmar/ql-testcon-demo to test
+    pr:
+      type: string
+      default: ""
+      description: Pull request number that triggered this run (for traceability)
+    workers:
+      type: integer
+      default: 2
+      description: Number of parallel k6 worker pods
+    vus:
+      type: integer
+      default: 10
+      description: Total virtual users, split across workers
+    duration:
+      type: string
+      default: 20s
+      description: Test duration
+  execution:
+    tags:
+      pr: "{{config.pr}}"
+      revision: "{{config.revision}}"
+  content:
+    git:
+      uri: https://github.com/olensmar/ql-testcon-demo
+      revision: "{{config.revision}}"
+      paths: [app, tests/load]
+  services:
+    shop:
+      image: node:22-alpine
+      transfer:
+        - from: /data/repo/app
+          to: /app
+      shell: node /app/src/server.ts
+      readinessProbe:
+        httpGet:
+          path: /healthz
+          port: 3000
+        periodSeconds: 1
+  steps:
+    - name: Run distributed load test
+      parallel:
+        count: config.workers
+        use:
+          - name: distribute/evenly
+        transfer:
+          - from: /data/repo/tests/load
+        container:
+          resources:
+            requests:
+              cpu: 128m
+              memory: 128Mi
+        run:
+          image: grafana/k6:1.1.0
+          workingDir: /data/repo/tests/load
+          env:
+            - name: BASE_URL
+              value: "http://{{services.shop.0.ip}}:3000"
+          shell: |
+            mkdir -p /data/artifacts
+            k6 run checkout.js \
+              --vus {{config.vus}} --duration {{config.duration}} \
+              --execution-segment {{index}}/{{count}}:{{index + 1}}/{{count}} \
+              --summary-export /data/artifacts/summary-{{index}}.json
+        artifacts:
+          workingDir: /data/artifacts
+          paths: ["*.json"]

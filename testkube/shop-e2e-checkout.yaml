@@ -1,0 +1,82 @@
+kind: TestWorkflow
+apiVersion: testworkflows.testkube.io/v1
+metadata:
+  name: shop-e2e-checkout
+  namespace: testkube
+  labels:
+    demo: testcon
+    type: e2e
+    service: checkout
+description: >-
+  Playwright browser tests for the full checkout flow in the shop UI: add to cart, checkout,
+  order summary with subtotal, shipping and total (app/public/index.html + app/src/checkout.ts).
+  Sharded across parallel Kubernetes pods (config.shards). Runs against an ephemeral copy of
+  the app started from source at the given revision.
+spec:
+  config:
+    revision:
+      type: string
+      default: main
+      description: Git branch or commit SHA of github.com/olensmar/ql-testcon-demo to test
+    pr:
+      type: string
+      default: ""
+      description: Pull request number that triggered this run (for traceability)
+    shards:
+      type: integer
+      default: 3
+      description: Number of parallel Playwright shards (pods)
+  execution:
+    tags:
+      pr: "{{config.pr}}"
+      revision: "{{config.revision}}"
+  content:
+    git:
+      uri: https://github.com/olensmar/ql-testcon-demo
+      revision: "{{config.revision}}"
+      paths: [app, tests/e2e]
+  services:
+    shop:
+      image: node:22-alpine
+      transfer:
+        - from: /data/repo/app
+          to: /app
+      shell: node /app/src/server.ts
+      readinessProbe:
+        httpGet:
+          path: /healthz
+          port: 3000
+        periodSeconds: 1
+  container:
+    image: mcr.microsoft.com/playwright:v1.56.1-noble
+    workingDir: /data/repo/tests/e2e
+    env:
+      - name: CI
+        value: "true"
+  steps:
+    - name: Install dependencies
+      shell: npm ci --no-audit --no-fund
+    - name: Run checkout E2E tests
+      parallel:
+        count: config.shards
+        transfer:
+          - from: /data/repo
+        fetch:
+          - from: /data/repo/tests/e2e/blob-report
+            to: /data/reports
+        container:
+          env:
+            - name: BASE_URL
+              value: "http://{{services.shop.0.ip}}:3000"
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+        shell: npx playwright test checkout.spec.ts --reporter blob --shard {{index + 1}}/{{count}}
+    - name: Merge reports
+      condition: always
+      shell: |
+        PLAYWRIGHT_JUNIT_OUTPUT_NAME=results/junit.xml \
+          npx playwright merge-reports --reporter=list,html,junit /data/reports
+      artifacts:
+        paths: ["playwright-report/**", "results/**"]

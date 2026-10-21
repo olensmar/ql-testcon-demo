@@ -1,0 +1,44 @@
+kind: TestWorkflow
+apiVersion: testworkflows.testkube.io/v1
+metadata:
+  name: shop-unit
+  namespace: testkube
+  labels:
+    demo: testcon
+    type: unit
+    service: all
+description: >-
+  Fast unit tests (node:test) for the pricing, cart and checkout logic in app/src.
+  Exercises calculateTotals, subtotal and cart item merging in isolation; no running app needed.
+spec:
+  config:
+    revision:
+      type: string
+      default: main
+      description: Git branch or commit SHA of github.com/olensmar/ql-testcon-demo to test
+    pr:
+      type: string
+      default: ""
+      description: Pull request number that triggered this run (for traceability)
+  execution:
+    tags:
+      pr: "{{config.pr}}"
+      revision: "{{config.revision}}"
+  content:
+    git:
+      uri: https://github.com/olensmar/ql-testcon-demo
+      revision: "{{config.revision}}"
+      paths: [app]
+  container:
+    image: node:22-alpine
+    workingDir: /data/repo
+  steps:
+    - name: Run unit tests
+      shell: |
+        mkdir -p /data/artifacts
+        node --test \
+          --test-reporter=spec --test-reporter-destination=stdout \
+          --test-reporter=junit --test-reporter-destination=/data/artifacts/junit.xml \
+          'app/test/unit/*.test.ts'
+      artifacts:
+        paths: ["/data/artifacts/**"]
