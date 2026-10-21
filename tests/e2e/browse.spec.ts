@@ -19,3 +19,7 @@ test("adding products updates the cart badge", async ({ page }) => {
 test("checkout is disabled for an empty cart", async ({ page }) => {
   await expect(page.getByTestId("checkout-button")).toBeDisabled();
 });
+
+test("shows the SAVE10 promo banner on the catalog", async ({ page }) => {
+  await expect(page.getByTestId("promo-banner")).toContainText("SAVE10");
+});
