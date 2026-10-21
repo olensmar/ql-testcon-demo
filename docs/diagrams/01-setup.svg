@@ -1,107 +1,106 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="Demo setup: a local Claude Agent SDK orchestrator watches GitHub pull requests, calls Claude for its five agents, and drives Testkube through the Testkube MCP server; Testkube runs every test workflow as pods on Kubernetes, each against its own copy of the app started from the PR's source." font-family="Inter, 'Helvetica Neue', Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="Demo setup: a local Claude Agent SDK orchestrator watches GitHub pull requests, calls Claude for its five agents, and drives Testkube through the Testkube MCP server; Testkube runs every test workflow as pods on Kubernetes, each against its own copy of the app started from the PR's source." font-family="Nunito, 'Helvetica Neue', Arial, sans-serif">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/>
+      <path d="M0,0 L10,5 L0,10 z" fill="#818CF8"/>
     </marker>
   </defs>
-  <rect width="1600" height="1000" fill="#ffffff"/>
 
   <!-- GitHub -->
-  <rect x="30" y="80" width="380" height="190" rx="16" fill="#f9fafb" stroke="#1f2937" stroke-width="2.5"/>
-  <text x="220" y="130" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2937">GitHub</text>
-  <text x="220" y="175" text-anchor="middle" font-size="22" fill="#374151">Pull request</text>
-  <text x="220" y="208" text-anchor="middle" font-size="22" fill="#374151">PR comments from agents</text>
-  <text x="220" y="241" text-anchor="middle" font-size="22" fill="#374151">quality-gate status check</text>
+  <rect x="30" y="80" width="380" height="190" rx="16" fill="#221848" stroke="#8B80D9" stroke-width="2.5"/>
+  <text x="220" y="130" text-anchor="middle" font-size="30" font-weight="700" fill="#FFFFFF">GitHub</text>
+  <text x="220" y="175" text-anchor="middle" font-size="22" fill="#E4E1F5">Pull request</text>
+  <text x="220" y="208" text-anchor="middle" font-size="22" fill="#E4E1F5">PR comments from agents</text>
+  <text x="220" y="241" text-anchor="middle" font-size="22" fill="#E4E1F5">quality-gate status check</text>
 
   <!-- Laptop -->
-  <rect x="520" y="30" width="560" height="530" rx="20" fill="none" stroke="#9ca3af" stroke-width="2" stroke-dasharray="10 8"/>
-  <text x="545" y="65" font-size="20" font-weight="600" fill="#6b7280">LAPTOP</text>
+  <rect x="520" y="30" width="560" height="530" rx="20" fill="none" stroke="#6E64B0" stroke-width="2" stroke-dasharray="10 8"/>
+  <text x="545" y="65" font-size="20" font-weight="700" fill="#FFAB40">LAPTOP</text>
 
-  <rect x="555" y="85" width="490" height="300" rx="16" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
-  <text x="800" y="130" text-anchor="middle" font-size="28" font-weight="700" fill="#1f2937">Quality loop orchestrator</text>
-  <text x="800" y="163" text-anchor="middle" font-size="20" fill="#4b5563">Claude Agent SDK · TypeScript</text>
+  <rect x="555" y="85" width="490" height="300" rx="16" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/>
+  <text x="800" y="130" text-anchor="middle" font-size="28" font-weight="700" fill="#FFFFFF">Quality loop orchestrator</text>
+  <text x="800" y="163" text-anchor="middle" font-size="20" fill="#C4BFE6">Claude Agent SDK · TypeScript</text>
   <!-- agent chips -->
-  <g font-size="20" font-weight="600" fill="#312e81" text-anchor="middle">
-    <rect x="580" y="190" width="140" height="70" rx="12" fill="#ffffff" stroke="#4f46e5" stroke-width="2"/>
-    <text x="650" y="222">Selector</text><text x="650" y="246" font-size="16" font-weight="400" fill="#4b5563">Sonnet</text>
-    <rect x="730" y="190" width="140" height="70" rx="12" fill="#ffffff" stroke="#4f46e5" stroke-width="2"/>
-    <text x="800" y="222">Executor</text><text x="800" y="246" font-size="16" font-weight="400" fill="#4b5563">Haiku</text>
-    <rect x="880" y="190" width="140" height="70" rx="12" fill="#ffffff" stroke="#4f46e5" stroke-width="2"/>
-    <text x="950" y="222">Triage</text><text x="950" y="246" font-size="16" font-weight="400" fill="#4b5563">Opus</text>
-    <rect x="655" y="280" width="140" height="70" rx="12" fill="#ffffff" stroke="#4f46e5" stroke-width="2"/>
-    <text x="725" y="312">Remediator</text><text x="725" y="336" font-size="16" font-weight="400" fill="#4b5563">Opus</text>
-    <rect x="805" y="280" width="140" height="70" rx="12" fill="#ffffff" stroke="#4f46e5" stroke-width="2"/>
-    <text x="875" y="312">Gate</text><text x="875" y="336" font-size="16" font-weight="400" fill="#4b5563">Sonnet</text>
+  <g font-size="20" font-weight="600" fill="#E0E3FF" text-anchor="middle">
+    <rect x="580" y="190" width="140" height="70" rx="12" fill="#221848" stroke="#818CF8" stroke-width="2"/>
+    <text x="650" y="222">Selector</text><text x="650" y="246" font-size="16" font-weight="400" fill="#C4BFE6">Sonnet</text>
+    <rect x="730" y="190" width="140" height="70" rx="12" fill="#221848" stroke="#818CF8" stroke-width="2"/>
+    <text x="800" y="222">Executor</text><text x="800" y="246" font-size="16" font-weight="400" fill="#C4BFE6">Haiku</text>
+    <rect x="880" y="190" width="140" height="70" rx="12" fill="#221848" stroke="#818CF8" stroke-width="2"/>
+    <text x="950" y="222">Triage</text><text x="950" y="246" font-size="16" font-weight="400" fill="#C4BFE6">Opus</text>
+    <rect x="655" y="280" width="140" height="70" rx="12" fill="#221848" stroke="#818CF8" stroke-width="2"/>
+    <text x="725" y="312">Remediator</text><text x="725" y="336" font-size="16" font-weight="400" fill="#C4BFE6">Opus</text>
+    <rect x="805" y="280" width="140" height="70" rx="12" fill="#221848" stroke="#818CF8" stroke-width="2"/>
+    <text x="875" y="312">Gate</text><text x="875" y="336" font-size="16" font-weight="400" fill="#C4BFE6">Sonnet</text>
   </g>
 
-  <rect x="555" y="450" width="490" height="85" rx="16" fill="#ffffff" stroke="#1f2937" stroke-width="2.5"/>
-  <text x="800" y="488" text-anchor="middle" font-size="26" font-weight="700" fill="#1f2937">Testkube MCP server</text>
-  <text x="800" y="519" text-anchor="middle" font-size="19" fill="#4b5563" font-family="'SF Mono', Menlo, monospace">testkube mcp serve</text>
+  <rect x="555" y="450" width="490" height="85" rx="16" fill="#221848" stroke="#8B80D9" stroke-width="2.5"/>
+  <text x="800" y="488" text-anchor="middle" font-size="26" font-weight="700" fill="#FFFFFF">Testkube MCP server</text>
+  <text x="800" y="519" text-anchor="middle" font-size="19" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace">testkube mcp serve</text>
 
-  <line x1="800" y1="385" x2="800" y2="446" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <text x="815" y="423" font-size="19" fill="#4b5563">MCP tool calls</text>
+  <line x1="800" y1="385" x2="800" y2="446" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="815" y="423" font-size="19" fill="#C4BFE6">MCP tool calls</text>
 
   <!-- Claude API -->
-  <rect x="1180" y="80" width="380" height="140" rx="16" fill="#f9fafb" stroke="#1f2937" stroke-width="2.5"/>
-  <text x="1370" y="137" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2937">Claude API</text>
-  <text x="1370" y="178" text-anchor="middle" font-size="21" fill="#374151">Opus · Sonnet · Haiku 5.5</text>
+  <rect x="1180" y="80" width="380" height="140" rx="16" fill="#221848" stroke="#8B80D9" stroke-width="2.5"/>
+  <text x="1370" y="137" text-anchor="middle" font-size="30" font-weight="700" fill="#FFFFFF">Claude API</text>
+  <text x="1370" y="178" text-anchor="middle" font-size="21" fill="#E4E1F5">Opus · Sonnet · Haiku 5.5</text>
 
   <!-- Testkube control plane -->
-  <rect x="1180" y="360" width="380" height="140" rx="16" fill="#f9fafb" stroke="#1f2937" stroke-width="2.5"/>
-  <text x="1370" y="415" text-anchor="middle" font-size="28" font-weight="700" fill="#1f2937">Testkube</text>
-  <text x="1370" y="455" text-anchor="middle" font-size="21" fill="#374151">control plane · history · logs</text>
-  <text x="1370" y="483" text-anchor="middle" font-size="21" fill="#374151">artifacts · tags</text>
+  <rect x="1180" y="360" width="380" height="140" rx="16" fill="#221848" stroke="#8B80D9" stroke-width="2.5"/>
+  <text x="1370" y="415" text-anchor="middle" font-size="28" font-weight="700" fill="#FFFFFF">Testkube</text>
+  <text x="1370" y="455" text-anchor="middle" font-size="21" fill="#E4E1F5">control plane · history · logs</text>
+  <text x="1370" y="483" text-anchor="middle" font-size="21" fill="#E4E1F5">artifacts · tags</text>
 
   <!-- Kubernetes cluster -->
-  <rect x="520" y="620" width="1040" height="350" rx="20" fill="#f3f4f6" stroke="#1f2937" stroke-width="2.5"/>
-  <text x="545" y="660" font-size="24" font-weight="700" fill="#1f2937">Kubernetes cluster</text>
-  <text x="545" y="690" font-size="19" fill="#4b5563">Testkube runner agent · one pod per shard / worker</text>
+  <rect x="520" y="620" width="1040" height="350" rx="20" fill="#1C1440" stroke="#8B80D9" stroke-width="2.5"/>
+  <text x="545" y="660" font-size="24" font-weight="700" fill="#FFFFFF">Kubernetes cluster</text>
+  <text x="545" y="690" font-size="19" fill="#C4BFE6">Testkube runner agent · one pod per shard / worker</text>
 
-  <rect x="900" y="705" width="380" height="80" rx="14" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
-  <text x="1090" y="740" text-anchor="middle" font-size="22" font-weight="700" fill="#14532d">Plushie Shop pod</text>
-  <text x="1090" y="767" text-anchor="middle" font-size="18" fill="#166534">started from the PR's source</text>
+  <rect x="900" y="705" width="380" height="80" rx="14" fill="#143D2E" stroke="#4ADE80" stroke-width="2.5"/>
+  <text x="1090" y="740" text-anchor="middle" font-size="22" font-weight="700" fill="#BBF7D0">Plushie Shop pod</text>
+  <text x="1090" y="767" text-anchor="middle" font-size="18" fill="#86EFAC">started from the PR's source</text>
 
-  <g font-size="19" font-weight="600" fill="#1f2937" text-anchor="middle">
-    <rect x="560" y="855" width="150" height="70" rx="12" fill="#ffffff" stroke="#6b7280" stroke-width="2"/>
+  <g font-size="19" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    <rect x="560" y="855" width="150" height="70" rx="12" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
     <text x="635" y="897">unit</text>
-    <rect x="725" y="855" width="150" height="70" rx="12" fill="#ffffff" stroke="#6b7280" stroke-width="2"/>
-    <text x="800" y="887">API</text><text x="800" y="911" font-size="15" font-weight="400" fill="#4b5563">newman</text>
-    <rect x="890" y="855" width="150" height="70" rx="12" fill="#ffffff" stroke="#6b7280" stroke-width="2"/>
-    <text x="965" y="887">E2E shard 1</text><text x="965" y="911" font-size="15" font-weight="400" fill="#4b5563">Playwright</text>
-    <rect x="1055" y="855" width="150" height="70" rx="12" fill="#ffffff" stroke="#6b7280" stroke-width="2"/>
-    <text x="1130" y="887">E2E shard 2</text><text x="1130" y="911" font-size="15" font-weight="400" fill="#4b5563">Playwright</text>
-    <rect x="1220" y="855" width="150" height="70" rx="12" fill="#ffffff" stroke="#6b7280" stroke-width="2"/>
-    <text x="1295" y="887">load worker 1</text><text x="1295" y="911" font-size="15" font-weight="400" fill="#4b5563">k6</text>
-    <rect x="1385" y="855" width="150" height="70" rx="12" fill="#ffffff" stroke="#6b7280" stroke-width="2"/>
-    <text x="1460" y="887">load worker 2</text><text x="1460" y="911" font-size="15" font-weight="400" fill="#4b5563">k6</text>
+    <rect x="725" y="855" width="150" height="70" rx="12" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+    <text x="800" y="887">API</text><text x="800" y="911" font-size="15" font-weight="400" fill="#C4BFE6">newman</text>
+    <rect x="890" y="855" width="150" height="70" rx="12" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+    <text x="965" y="887">E2E shard 1</text><text x="965" y="911" font-size="15" font-weight="400" fill="#C4BFE6">Playwright</text>
+    <rect x="1055" y="855" width="150" height="70" rx="12" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+    <text x="1130" y="887">E2E shard 2</text><text x="1130" y="911" font-size="15" font-weight="400" fill="#C4BFE6">Playwright</text>
+    <rect x="1220" y="855" width="150" height="70" rx="12" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+    <text x="1295" y="887">load worker 1</text><text x="1295" y="911" font-size="15" font-weight="400" fill="#C4BFE6">k6</text>
+    <rect x="1385" y="855" width="150" height="70" rx="12" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+    <text x="1460" y="887">load worker 2</text><text x="1460" y="911" font-size="15" font-weight="400" fill="#C4BFE6">k6</text>
   </g>
-  <line x1="1090" y1="852" x2="1090" y2="789" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <text x="1105" y="827" font-size="18" fill="#4b5563">HTTP</text>
+  <line x1="1090" y1="852" x2="1090" y2="789" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="1105" y="827" font-size="18" fill="#C4BFE6">HTTP</text>
 
   <!-- arrows: GitHub <-> orchestrator -->
-  <line x1="414" y1="150" x2="551" y2="150" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <text x="420" y="138" font-size="18" fill="#4b5563">new PR</text>
-  <line x1="551" y1="235" x2="414" y2="235" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <text x="420" y="268" font-size="18" fill="#4b5563">comments</text>
-  <text x="420" y="291" font-size="18" fill="#4b5563">fix commit</text>
-  <text x="420" y="314" font-size="18" fill="#4b5563">status</text>
+  <line x1="414" y1="150" x2="551" y2="150" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="420" y="138" font-size="18" fill="#C4BFE6">new PR</text>
+  <line x1="551" y1="235" x2="414" y2="235" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="420" y="268" font-size="18" fill="#C4BFE6">comments</text>
+  <text x="420" y="291" font-size="18" fill="#C4BFE6">fix commit</text>
+  <text x="420" y="314" font-size="18" fill="#C4BFE6">status</text>
 
   <!-- orchestrator <-> Claude -->
-  <line x1="1049" y1="150" x2="1176" y2="150" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
-  <text x="1130" y="138" text-anchor="middle" font-size="18" fill="#4b5563">prompts</text>
+  <line x1="1049" y1="150" x2="1176" y2="150" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+  <text x="1130" y="138" text-anchor="middle" font-size="18" fill="#C4BFE6">prompts</text>
 
   <!-- MCP -> Testkube -->
-  <line x1="1049" y1="485" x2="1176" y2="485" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <text x="1130" y="448" text-anchor="middle" font-size="18" fill="#4b5563">Testkube</text>
-  <text x="1130" y="470" text-anchor="middle" font-size="18" fill="#4b5563">API</text>
+  <line x1="1049" y1="485" x2="1176" y2="485" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="1130" y="448" text-anchor="middle" font-size="18" fill="#C4BFE6">Testkube</text>
+  <text x="1130" y="470" text-anchor="middle" font-size="18" fill="#C4BFE6">API</text>
 
   <!-- Testkube -> cluster -->
-  <line x1="1370" y1="504" x2="1370" y2="616" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <text x="1385" y="555" font-size="18" fill="#4b5563">schedules runs</text>
-  <text x="1385" y="578" font-size="18" fill="#4b5563">collects results</text>
+  <line x1="1370" y1="504" x2="1370" y2="616" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="1385" y="555" font-size="18" fill="#C4BFE6">schedules runs</text>
+  <text x="1385" y="578" font-size="18" fill="#C4BFE6">collects results</text>
 
   <!-- GitHub -> cluster (clone) -->
-  <polyline points="220,274 220,790 516,790" fill="none" stroke="#4b5563" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow)"/>
-  <text x="238" y="770" font-size="18" fill="#4b5563">git clone @ PR commit</text>
-  <text x="238" y="815" font-size="18" fill="#4b5563">(no image build)</text>
+  <polyline points="220,274 220,790 516,790" fill="none" stroke="#818CF8" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow)"/>
+  <text x="238" y="770" font-size="18" fill="#C4BFE6">git clone @ PR commit</text>
+  <text x="238" y="815" font-size="18" fill="#C4BFE6">(no image build)</text>
 </svg>

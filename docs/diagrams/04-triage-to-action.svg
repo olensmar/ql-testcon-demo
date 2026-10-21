@@ -1,22 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 780" role="img" aria-label="Every failed execution gets its own triage agent, which reads logs, artifacts, run history and the PR's code, re-running once if it suspects a flake. Each classification maps to an automatic action: a product bug or test defect is fixed and verified, a confirmed flake is quarantined, and an infra failure is retried." font-family="Inter, 'Helvetica Neue', Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 780" role="img" aria-label="Every failed execution gets its own triage agent, which reads logs, artifacts, run history and the PR's code, re-running once if it suspects a flake. Each classification maps to an automatic action: a product bug or test defect is fixed and verified, a confirmed flake is quarantined, and an infra failure is retried." font-family="Nunito, 'Helvetica Neue', Arial, sans-serif">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-      <path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/>
+      <path d="M0,0 L10,5 L0,10 z" fill="#818CF8"/>
     </marker>
   </defs>
-  <rect width="1600" height="780" fill="#ffffff"/>
 
   <!-- failed execution -->
-  <rect x="40" y="335" width="250" height="110" rx="16" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
-  <text x="165" y="382" text-anchor="middle" font-size="24" font-weight="700" fill="#7f1d1d">Failed</text>
-  <text x="165" y="414" text-anchor="middle" font-size="24" font-weight="700" fill="#7f1d1d">execution</text>
-  <line x1="290" y1="390" x2="346" y2="390" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="40" y="335" width="250" height="110" rx="16" fill="#45172A" stroke="#F87171" stroke-width="2.5"/>
+  <text x="165" y="382" text-anchor="middle" font-size="24" font-weight="700" fill="#FECACA">Failed</text>
+  <text x="165" y="414" text-anchor="middle" font-size="24" font-weight="700" fill="#FECACA">execution</text>
+  <line x1="290" y1="390" x2="346" y2="390" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
 
   <!-- triage agent -->
-  <rect x="350" y="235" width="330" height="310" rx="16" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
-  <text x="515" y="282" text-anchor="middle" font-size="26" font-weight="700" fill="#1f2937">Triage agent</text>
-  <text x="515" y="310" text-anchor="middle" font-size="17" fill="#4b5563">one per failure, in parallel</text>
-  <g font-size="19" fill="#312e81">
+  <rect x="350" y="235" width="330" height="310" rx="16" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/>
+  <text x="515" y="282" text-anchor="middle" font-size="26" font-weight="700" fill="#FFFFFF">Triage agent</text>
+  <text x="515" y="310" text-anchor="middle" font-size="17" fill="#C4BFE6">one per failure, in parallel</text>
+  <g font-size="19" fill="#E0E3FF">
     <text x="380" y="355">· logs, per shard</text>
     <text x="380" y="389">· artifacts and JUnit</text>
     <text x="380" y="423">· run history</text>
@@ -26,7 +25,7 @@
   </g>
 
   <!-- fan out -->
-  <g fill="none" stroke="#4b5563" stroke-width="2.5">
+  <g fill="none" stroke="#818CF8" stroke-width="2.5">
     <polyline points="680,390 720,390 720,110 756,110" marker-end="url(#arrow)"/>
     <polyline points="720,390 720,300 756,300" marker-end="url(#arrow)"/>
     <polyline points="720,390 720,490 756,490" marker-end="url(#arrow)"/>
@@ -35,42 +34,42 @@
 
   <!-- classifications -->
   <g font-size="22" font-weight="700" text-anchor="middle">
-    <rect x="760" y="75" width="240" height="70" rx="35" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
-    <text x="880" y="118" fill="#7f1d1d">product bug</text>
-    <rect x="760" y="265" width="240" height="70" rx="35" fill="#ffedd5" stroke="#ea580c" stroke-width="2.5"/>
-    <text x="880" y="308" fill="#7c2d12">test defect</text>
-    <rect x="760" y="455" width="240" height="70" rx="35" fill="#fef3c7" stroke="#d97706" stroke-width="2.5"/>
-    <text x="880" y="498" fill="#78350f">flake</text>
-    <rect x="760" y="645" width="240" height="70" rx="35" fill="#f3f4f6" stroke="#6b7280" stroke-width="2.5"/>
-    <text x="880" y="688" fill="#374151">infra</text>
+    <rect x="760" y="75" width="240" height="70" rx="35" fill="#45172A" stroke="#F87171" stroke-width="2.5"/>
+    <text x="880" y="118" fill="#FECACA">product bug</text>
+    <rect x="760" y="265" width="240" height="70" rx="35" fill="#45250F" stroke="#FB923C" stroke-width="2.5"/>
+    <text x="880" y="308" fill="#FED7AA">test defect</text>
+    <rect x="760" y="455" width="240" height="70" rx="35" fill="#453410" stroke="#FFAB40" stroke-width="2.5"/>
+    <text x="880" y="498" fill="#FDE68A">flake</text>
+    <rect x="760" y="645" width="240" height="70" rx="35" fill="#1C1440" stroke="#8B80D9" stroke-width="2.5"/>
+    <text x="880" y="688" fill="#E4E1F5">infra</text>
   </g>
 
   <!-- actions -->
-  <g stroke="#4b5563" stroke-width="2.5">
+  <g stroke="#818CF8" stroke-width="2.5">
     <line x1="1000" y1="110" x2="1076" y2="110" marker-end="url(#arrow)"/>
     <line x1="1000" y1="300" x2="1076" y2="300" marker-end="url(#arrow)"/>
     <line x1="1000" y1="490" x2="1076" y2="490" marker-end="url(#arrow)"/>
     <line x1="1000" y1="680" x2="1076" y2="680" marker-end="url(#arrow)"/>
   </g>
-  <g fill="#ffffff" stroke="#1f2937" stroke-width="2">
+  <g fill="#221848" stroke="#8B80D9" stroke-width="2">
     <rect x="1080" y="55" width="480" height="110" rx="14"/>
     <rect x="1080" y="245" width="480" height="110" rx="14"/>
     <rect x="1080" y="435" width="480" height="110" rx="14"/>
     <rect x="1080" y="625" width="480" height="110" rx="14"/>
   </g>
-  <g font-size="21" fill="#1f2937">
+  <g font-size="21" fill="#FFFFFF">
     <text x="1105" y="98" font-weight="700">Fix the code + regression test</text>
-    <text x="1105" y="130" fill="#4b5563">Remediator commits, Executor verifies</text>
+    <text x="1105" y="130" fill="#C4BFE6">Remediator commits, Executor verifies</text>
     <text x="1105" y="288" font-weight="700">Fix the test</text>
-    <text x="1105" y="320" fill="#4b5563">Remediator commits, Executor verifies</text>
+    <text x="1105" y="320" fill="#C4BFE6">Remediator commits, Executor verifies</text>
     <text x="1105" y="478" font-weight="700">Quarantine the workflow</text>
-    <text x="1105" y="510" fill="#4b5563">label in Testkube · doesn't block the gate</text>
+    <text x="1105" y="510" fill="#C4BFE6">label in Testkube · doesn't block the gate</text>
     <text x="1105" y="668" font-weight="700">Retry</text>
-    <text x="1105" y="700" fill="#4b5563">Executor re-runs once, no code change</text>
+    <text x="1105" y="700" fill="#C4BFE6">Executor re-runs once, no code change</text>
   </g>
 
   <!-- demo markers -->
-  <g font-size="17" font-style="italic" fill="#6b7280" text-anchor="middle">
+  <g font-size="17" font-style="italic" fill="#A49DD0" text-anchor="middle">
     <text x="880" y="172">demo: discount on shipping</text>
     <text x="880" y="552">demo: slow catalog</text>
   </g>

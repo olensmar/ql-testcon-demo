@@ -1,31 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 840" role="img" aria-label="The same four test workflows: run back to back on one CI runner they take about 75 seconds; run by Testkube as parallel pods on Kubernetes, with Playwright split into shards and k6 into workers, they finish in about 33 seconds." font-family="Inter, 'Helvetica Neue', Arial, sans-serif">
-  <rect width="1600" height="840" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 840" role="img" aria-label="The same four test workflows: run back to back on one CI runner they take about 75 seconds; run by Testkube as parallel pods on Kubernetes, with Playwright split into shards and k6 into workers, they finish in about 33 seconds." font-family="Nunito, 'Helvetica Neue', Arial, sans-serif">
   <!-- scale: x = 330 + seconds * 11 -->
 
   <!-- Panel A: CI -->
-  <text x="40" y="60" font-size="28" font-weight="700" fill="#1f2937">CI runner: one machine, one suite after another</text>
-  <g font-size="20" fill="#374151">
+  <text x="40" y="60" font-size="28" font-weight="700" fill="#FFFFFF">CI runner: one machine, one suite after another</text>
+  <g font-size="20" fill="#E4E1F5">
     <text x="40" y="118">unit</text>
     <text x="40" y="168">API</text>
     <text x="40" y="218">E2E</text>
     <text x="40" y="268">load</text>
   </g>
-  <g fill="#9ca3af">
+  <g fill="#6E64B0">
     <rect x="330" y="96" width="65" height="30" rx="6"/>
     <rect x="395" y="146" width="109" height="30" rx="6"/>
     <rect x="504" y="196" width="285" height="30" rx="6"/>
     <rect x="789" y="246" width="362" height="30" rx="6"/>
   </g>
-  <line x1="1151" y1="80" x2="1151" y2="300" stroke="#1f2937" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="1380" y="185" text-anchor="middle" font-size="56" font-weight="800" fill="#6b7280">≈ 75 s</text>
-  <text x="1380" y="220" text-anchor="middle" font-size="20" fill="#6b7280">back to back</text>
+  <line x1="1151" y1="80" x2="1151" y2="300" stroke="#8B80D9" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="1380" y="185" text-anchor="middle" font-size="56" font-weight="800" fill="#A49DD0">≈ 75 s</text>
+  <text x="1380" y="220" text-anchor="middle" font-size="20" fill="#A49DD0">back to back</text>
 
   <!-- axis A -->
-  <line x1="330" y1="300" x2="1250" y2="300" stroke="#d1d5db" stroke-width="2"/>
+  <line x1="330" y1="300" x2="1250" y2="300" stroke="#4A3F85" stroke-width="2"/>
 
   <!-- Panel B: Testkube -->
-  <text x="40" y="400" font-size="28" font-weight="700" fill="#1f2937">Testkube on Kubernetes: one pod per workflow, shard and worker</text>
-  <g font-size="20" fill="#374151">
+  <text x="40" y="400" font-size="28" font-weight="700" fill="#FFFFFF">Testkube on Kubernetes: one pod per workflow, shard and worker</text>
+  <g font-size="20" fill="#E4E1F5">
     <text x="40" y="458">unit</text>
     <text x="40" y="508">API</text>
     <text x="40" y="558">E2E shard 1</text>
@@ -33,7 +32,7 @@
     <text x="40" y="658">load worker 1</text>
     <text x="40" y="708">load worker 2</text>
   </g>
-  <g fill="#4f46e5">
+  <g fill="#FFAB40">
     <rect x="330" y="436" width="65" height="30" rx="6"/>
     <rect x="330" y="486" width="109" height="30" rx="6"/>
     <rect x="330" y="536" width="285" height="30" rx="6"/>
@@ -41,19 +40,19 @@
     <rect x="330" y="636" width="362" height="30" rx="6"/>
     <rect x="330" y="686" width="362" height="30" rx="6"/>
   </g>
-  <line x1="692" y1="420" x2="692" y2="740" stroke="#4f46e5" stroke-width="2" stroke-dasharray="6 5"/>
-  <text x="1380" y="575" text-anchor="middle" font-size="56" font-weight="800" fill="#4f46e5">≈ 33 s</text>
-  <text x="1380" y="610" text-anchor="middle" font-size="20" fill="#4f46e5">in parallel</text>
-  <text x="1380" y="640" text-anchor="middle" font-size="20" fill="#4f46e5">each against its own app pod</text>
+  <line x1="692" y1="420" x2="692" y2="740" stroke="#818CF8" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="1380" y="575" text-anchor="middle" font-size="56" font-weight="800" fill="#FFAB40">≈ 33 s</text>
+  <text x="1380" y="610" text-anchor="middle" font-size="20" fill="#FFAB40">in parallel</text>
+  <text x="1380" y="640" text-anchor="middle" font-size="20" fill="#FFAB40">each against its own app pod</text>
 
   <!-- axis B with ticks -->
-  <line x1="330" y1="740" x2="1250" y2="740" stroke="#9ca3af" stroke-width="2"/>
-  <g font-size="17" fill="#6b7280" text-anchor="middle">
-    <line x1="330" y1="740" x2="330" y2="750" stroke="#9ca3af" stroke-width="2"/><text x="330" y="775">0 s</text>
-    <line x1="550" y1="740" x2="550" y2="750" stroke="#9ca3af" stroke-width="2"/><text x="550" y="775">20 s</text>
-    <line x1="770" y1="740" x2="770" y2="750" stroke="#9ca3af" stroke-width="2"/><text x="770" y="775">40 s</text>
-    <line x1="990" y1="740" x2="990" y2="750" stroke="#9ca3af" stroke-width="2"/><text x="990" y="775">60 s</text>
-    <line x1="1210" y1="740" x2="1210" y2="750" stroke="#9ca3af" stroke-width="2"/><text x="1210" y="775">80 s</text>
+  <line x1="330" y1="740" x2="1250" y2="740" stroke="#6E64B0" stroke-width="2"/>
+  <g font-size="17" fill="#A49DD0" text-anchor="middle">
+    <line x1="330" y1="740" x2="330" y2="750" stroke="#6E64B0" stroke-width="2"/><text x="330" y="775">0 s</text>
+    <line x1="550" y1="740" x2="550" y2="750" stroke="#6E64B0" stroke-width="2"/><text x="550" y="775">20 s</text>
+    <line x1="770" y1="740" x2="770" y2="750" stroke="#6E64B0" stroke-width="2"/><text x="770" y="775">40 s</text>
+    <line x1="990" y1="740" x2="990" y2="750" stroke="#6E64B0" stroke-width="2"/><text x="990" y="775">60 s</text>
+    <line x1="1210" y1="740" x2="1210" y2="750" stroke="#6E64B0" stroke-width="2"/><text x="1210" y="775">80 s</text>
   </g>
-  <text x="40" y="820" font-size="16" fill="#9ca3af">Durations measured in a demo run (PR #1). Back to back = the same executions run one after another.</text>
+  <text x="40" y="820" font-size="16" fill="#6E64B0">Durations measured in a demo run (PR #1). Back to back = the same executions run one after another.</text>
 </svg>

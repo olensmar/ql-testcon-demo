@@ -1,36 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" role="img" aria-label="The Selector agent combines the PR diff with Testkube workflow metadata (labels, coverage descriptions, health and config parameters) to produce a test plan: which workflows to run, with what parallelism, and why each one is run or skipped." font-family="Inter, 'Helvetica Neue', Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" role="img" aria-label="The Selector agent combines the PR diff with Testkube workflow metadata (labels, coverage descriptions, health and config parameters) to produce a test plan: which workflows to run, with what parallelism, and why each one is run or skipped." font-family="Nunito, 'Helvetica Neue', Arial, sans-serif">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-      <path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/>
+      <path d="M0,0 L10,5 L0,10 z" fill="#818CF8"/>
     </marker>
   </defs>
-  <rect width="1600" height="800" fill="#ffffff"/>
 
   <!-- inputs -->
-  <text x="40" y="60" font-size="20" font-weight="700" fill="#6b7280">INPUTS</text>
-  <rect x="40" y="80" width="340" height="120" rx="14" fill="#f9fafb" stroke="#1f2937" stroke-width="2"/>
-  <text x="62" y="118" font-size="22" font-weight="700" fill="#1f2937">From GitHub</text>
-  <text x="62" y="152" font-size="19" fill="#374151">· PR title and description</text>
-  <text x="62" y="182" font-size="19" fill="#374151">· changed files and diff</text>
+  <text x="40" y="60" font-size="20" font-weight="700" fill="#FFAB40">INPUTS</text>
+  <rect x="40" y="80" width="340" height="120" rx="14" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <text x="62" y="118" font-size="22" font-weight="700" fill="#FFFFFF">From GitHub</text>
+  <text x="62" y="152" font-size="19" fill="#E4E1F5">· PR title and description</text>
+  <text x="62" y="182" font-size="19" fill="#E4E1F5">· changed files and diff</text>
 
-  <rect x="40" y="230" width="340" height="270" rx="14" fill="#f9fafb" stroke="#1f2937" stroke-width="2"/>
-  <text x="62" y="268" font-size="22" font-weight="700" fill="#1f2937">From Testkube (MCP)</text>
-  <text x="62" y="302" font-size="19" fill="#374151">· labels: type, service</text>
-  <text x="62" y="332" font-size="19" fill="#374151">· description: what it covers</text>
-  <text x="62" y="362" font-size="19" fill="#374151">· health: pass rate, flip rate</text>
-  <text x="62" y="392" font-size="19" fill="#374151">· config: shards, workers</text>
-  <text x="62" y="422" font-size="19" fill="#374151">· quarantine label</text>
-  <text x="62" y="458" font-size="16" fill="#6b7280" font-family="'SF Mono', Menlo, monospace">list_workflows</text>
-  <text x="62" y="482" font-size="16" fill="#6b7280" font-family="'SF Mono', Menlo, monospace">get_workflow_definition</text>
+  <rect x="40" y="230" width="340" height="270" rx="14" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <text x="62" y="268" font-size="22" font-weight="700" fill="#FFFFFF">From Testkube (MCP)</text>
+  <text x="62" y="302" font-size="19" fill="#E4E1F5">· labels: type, service</text>
+  <text x="62" y="332" font-size="19" fill="#E4E1F5">· description: what it covers</text>
+  <text x="62" y="362" font-size="19" fill="#E4E1F5">· health: pass rate, flip rate</text>
+  <text x="62" y="392" font-size="19" fill="#E4E1F5">· config: shards, workers</text>
+  <text x="62" y="422" font-size="19" fill="#E4E1F5">· quarantine label</text>
+  <text x="62" y="458" font-size="16" fill="#A49DD0" font-family="'SF Mono', Menlo, monospace">list_workflows</text>
+  <text x="62" y="482" font-size="16" fill="#A49DD0" font-family="'SF Mono', Menlo, monospace">get_workflow_definition</text>
 
-  <polyline points="380,140 420,140 420,330 456,330" fill="none" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <line x1="380" y1="355" x2="456" y2="355" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <polyline points="380,140 420,140 420,330 456,330" fill="none" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="380" y1="355" x2="456" y2="355" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
 
   <!-- selector agent -->
-  <rect x="460" y="200" width="330" height="320" rx="16" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
-  <text x="625" y="246" text-anchor="middle" font-size="26" font-weight="700" fill="#1f2937">Selector agent</text>
-  <text x="625" y="274" text-anchor="middle" font-size="17" fill="#4b5563">Sonnet · read-only tools</text>
-  <g font-size="19" fill="#312e81">
+  <rect x="460" y="200" width="330" height="320" rx="16" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/>
+  <text x="625" y="246" text-anchor="middle" font-size="26" font-weight="700" fill="#FFFFFF">Selector agent</text>
+  <text x="625" y="274" text-anchor="middle" font-size="17" fill="#C4BFE6">Sonnet · read-only tools</text>
+  <g font-size="19" fill="#E0E3FF">
     <text x="488" y="320">· match coverage to the diff</text>
     <text x="488" y="354">· every test level that</text>
     <text x="503" y="380">  touches the change</text>
@@ -38,48 +37,48 @@
     <text x="488" y="448">· shard / distribute where</text>
     <text x="503" y="474">  the workflow supports it</text>
   </g>
-  <line x1="790" y1="360" x2="856" y2="360" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <text x="823" y="345" text-anchor="middle" font-size="17" fill="#4b5563">plan</text>
+  <line x1="790" y1="360" x2="856" y2="360" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="823" y="345" text-anchor="middle" font-size="17" fill="#C4BFE6">plan</text>
 
   <!-- plan -->
-  <text x="860" y="60" font-size="20" font-weight="700" fill="#6b7280">TEST PLAN · demo PR "Add discount codes"</text>
+  <text x="860" y="60" font-size="20" font-weight="700" fill="#FFAB40">TEST PLAN · demo PR "Add discount codes"</text>
   <g font-size="19">
     <!-- rows: y = 80 + i*95 -->
-    <rect x="860" y="80" width="700" height="80" rx="12" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-    <rect x="878" y="102" width="70" height="36" rx="18" fill="#dcfce7"/><text x="913" y="127" text-anchor="middle" font-weight="700" fill="#166534" font-size="17">RUN</text>
-    <text x="968" y="115" font-weight="700" fill="#1f2937" font-family="'SF Mono', Menlo, monospace" font-size="18">shop-unit</text>
-    <text x="968" y="144" fill="#4b5563" font-size="17">pricing logic in checkout.ts changed; cheap</text>
+    <rect x="860" y="80" width="700" height="80" rx="12" fill="#221848" stroke="#4A3F85" stroke-width="2"/>
+    <rect x="878" y="102" width="70" height="36" rx="18" fill="#143D2E"/><text x="913" y="127" text-anchor="middle" font-weight="700" fill="#86EFAC" font-size="17">RUN</text>
+    <text x="968" y="115" font-weight="700" fill="#FFFFFF" font-family="'SF Mono', Menlo, monospace" font-size="18">shop-unit</text>
+    <text x="968" y="144" fill="#C4BFE6" font-size="17">pricing logic in checkout.ts changed; cheap</text>
 
-    <rect x="860" y="175" width="700" height="80" rx="12" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-    <rect x="878" y="197" width="70" height="36" rx="18" fill="#dcfce7"/><text x="913" y="222" text-anchor="middle" font-weight="700" fill="#166534" font-size="17">RUN</text>
-    <text x="968" y="210" font-weight="700" fill="#1f2937" font-family="'SF Mono', Menlo, monospace" font-size="18">shop-api-checkout</text>
-    <text x="968" y="239" fill="#4b5563" font-size="17">POST /api/checkout accepts discountCode</text>
+    <rect x="860" y="175" width="700" height="80" rx="12" fill="#221848" stroke="#4A3F85" stroke-width="2"/>
+    <rect x="878" y="197" width="70" height="36" rx="18" fill="#143D2E"/><text x="913" y="222" text-anchor="middle" font-weight="700" fill="#86EFAC" font-size="17">RUN</text>
+    <text x="968" y="210" font-weight="700" fill="#FFFFFF" font-family="'SF Mono', Menlo, monospace" font-size="18">shop-api-checkout</text>
+    <text x="968" y="239" fill="#C4BFE6" font-size="17">POST /api/checkout accepts discountCode</text>
 
-    <rect x="860" y="270" width="700" height="80" rx="12" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-    <rect x="878" y="292" width="70" height="36" rx="18" fill="#dcfce7"/><text x="913" y="317" text-anchor="middle" font-weight="700" fill="#166534" font-size="17">RUN</text>
-    <text x="968" y="305" font-weight="700" fill="#1f2937" font-family="'SF Mono', Menlo, monospace" font-size="18">shop-e2e-checkout</text>
-    <rect x="1420" y="288" width="120" height="30" rx="8" fill="#eef2ff"/><text x="1480" y="309" text-anchor="middle" fill="#3730a3" font-size="16" font-weight="600">shards = 2</text>
-    <text x="968" y="334" fill="#4b5563" font-size="17">discount input and order summary changed</text>
+    <rect x="860" y="270" width="700" height="80" rx="12" fill="#221848" stroke="#4A3F85" stroke-width="2"/>
+    <rect x="878" y="292" width="70" height="36" rx="18" fill="#143D2E"/><text x="913" y="317" text-anchor="middle" font-weight="700" fill="#86EFAC" font-size="17">RUN</text>
+    <text x="968" y="305" font-weight="700" fill="#FFFFFF" font-family="'SF Mono', Menlo, monospace" font-size="18">shop-e2e-checkout</text>
+    <rect x="1420" y="288" width="120" height="30" rx="8" fill="#2B1F63"/><text x="1480" y="309" text-anchor="middle" fill="#C7CBFF" font-size="16" font-weight="600">shards = 2</text>
+    <text x="968" y="334" fill="#C4BFE6" font-size="17">discount input and order summary changed</text>
 
-    <rect x="860" y="365" width="700" height="80" rx="12" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-    <rect x="878" y="387" width="70" height="36" rx="18" fill="#dcfce7"/><text x="913" y="412" text-anchor="middle" font-weight="700" fill="#166534" font-size="17">RUN</text>
-    <text x="968" y="400" font-weight="700" fill="#1f2937" font-family="'SF Mono', Menlo, monospace" font-size="18">shop-e2e-browse</text>
-    <text x="968" y="429" fill="#4b5563" font-size="17">catalog now shows the SAVE10 promo banner</text>
+    <rect x="860" y="365" width="700" height="80" rx="12" fill="#221848" stroke="#4A3F85" stroke-width="2"/>
+    <rect x="878" y="387" width="70" height="36" rx="18" fill="#143D2E"/><text x="913" y="412" text-anchor="middle" font-weight="700" fill="#86EFAC" font-size="17">RUN</text>
+    <text x="968" y="400" font-weight="700" fill="#FFFFFF" font-family="'SF Mono', Menlo, monospace" font-size="18">shop-e2e-browse</text>
+    <text x="968" y="429" fill="#C4BFE6" font-size="17">catalog now shows the SAVE10 promo banner</text>
 
-    <rect x="860" y="460" width="700" height="80" rx="12" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
-    <rect x="878" y="482" width="70" height="36" rx="18" fill="#dcfce7"/><text x="913" y="507" text-anchor="middle" font-weight="700" fill="#166534" font-size="17">RUN</text>
-    <text x="968" y="495" font-weight="700" fill="#1f2937" font-family="'SF Mono', Menlo, monospace" font-size="18">shop-load-checkout</text>
-    <rect x="1420" y="478" width="120" height="30" rx="8" fill="#eef2ff"/><text x="1480" y="499" text-anchor="middle" fill="#3730a3" font-size="16" font-weight="600">workers = 2</text>
-    <text x="968" y="524" fill="#4b5563" font-size="17">load-tested request path changed</text>
+    <rect x="860" y="460" width="700" height="80" rx="12" fill="#221848" stroke="#4A3F85" stroke-width="2"/>
+    <rect x="878" y="482" width="70" height="36" rx="18" fill="#143D2E"/><text x="913" y="507" text-anchor="middle" font-weight="700" fill="#86EFAC" font-size="17">RUN</text>
+    <text x="968" y="495" font-weight="700" fill="#FFFFFF" font-family="'SF Mono', Menlo, monospace" font-size="18">shop-load-checkout</text>
+    <rect x="1420" y="478" width="120" height="30" rx="8" fill="#2B1F63"/><text x="1480" y="499" text-anchor="middle" fill="#C7CBFF" font-size="16" font-weight="600">workers = 2</text>
+    <text x="968" y="524" fill="#C4BFE6" font-size="17">load-tested request path changed</text>
 
-    <rect x="860" y="555" width="700" height="80" rx="12" fill="#f9fafb" stroke="#d1d5db" stroke-width="2" stroke-dasharray="6 5"/>
-    <rect x="878" y="577" width="70" height="36" rx="18" fill="#f3f4f6"/><text x="913" y="602" text-anchor="middle" font-weight="700" fill="#6b7280" font-size="17">SKIP</text>
-    <text x="968" y="590" font-weight="700" fill="#6b7280" font-family="'SF Mono', Menlo, monospace" font-size="18">shop-api-cart</text>
-    <text x="968" y="619" fill="#6b7280" font-size="17">cart.ts and catalog.ts unchanged</text>
+    <rect x="860" y="555" width="700" height="80" rx="12" fill="#221848" stroke="#4A3F85" stroke-width="2" stroke-dasharray="6 5"/>
+    <rect x="878" y="577" width="70" height="36" rx="18" fill="#1C1440"/><text x="913" y="602" text-anchor="middle" font-weight="700" fill="#A49DD0" font-size="17">SKIP</text>
+    <text x="968" y="590" font-weight="700" fill="#A49DD0" font-family="'SF Mono', Menlo, monospace" font-size="18">shop-api-cart</text>
+    <text x="968" y="619" fill="#A49DD0" font-size="17">cart.ts and catalog.ts unchanged</text>
   </g>
 
   <!-- footer -->
-  <rect x="460" y="680" width="1100" height="70" rx="12" fill="#f3f4f6"/>
-  <text x="1010" y="712" text-anchor="middle" font-size="19" fill="#374151">The plan is posted on the PR and handed to the Executor as JSON.</text>
-  <text x="1010" y="738" text-anchor="middle" font-size="19" fill="#374151">The verification run reuses the same plan at the fixed commit.</text>
+  <rect x="460" y="680" width="1100" height="70" rx="12" fill="#1C1440"/>
+  <text x="1010" y="712" text-anchor="middle" font-size="19" fill="#E4E1F5">The plan is posted on the PR and handed to the Executor as JSON.</text>
+  <text x="1010" y="738" text-anchor="middle" font-size="19" fill="#E4E1F5">The verification run reuses the same plan at the fixed commit.</text>
 </svg>

@@ -1,69 +1,68 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 960" role="img" aria-label="Running tests inside an agent's sandbox squeezes the app, runners, browsers and load generators into one short-lived container whose results only the agent sees and which disappear with the session. With Testkube the agent orchestrates instead: tests run as pods in real Kubernetes environments, and every result stays in a shared, independent record with history that agents, CI and people all use." font-family="Inter, 'Helvetica Neue', Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 960" role="img" aria-label="Running tests inside an agent's sandbox squeezes the app, runners, browsers and load generators into one short-lived container whose results only the agent sees and which disappear with the session. With Testkube the agent orchestrates instead: tests run as pods in real Kubernetes environments, and every result stays in a shared, independent record with history that agents, CI and people all use." font-family="Nunito, 'Helvetica Neue', Arial, sans-serif">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/>
+      <path d="M0,0 L10,5 L0,10 z" fill="#818CF8"/>
     </marker>
     <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+      <path d="M0,0 L10,5 L0,10 z" fill="#F87171"/>
     </marker>
   </defs>
-  <rect width="1600" height="960" fill="#ffffff"/>
 
   <!-- ===== LEFT: tests in the sandbox ===== -->
-  <text x="40" y="52" font-size="28" font-weight="700" fill="#1f2937">Tests inside the agent's sandbox</text>
+  <text x="40" y="52" font-size="28" font-weight="700" fill="#FFFFFF">Tests inside the agent's sandbox</text>
 
-  <rect x="40" y="80" width="520" height="300" rx="18" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="10 7"/>
-  <text x="62" y="114" font-size="19" font-weight="700" fill="#991b1b">ONE SANDBOX CONTAINER · lives for one session</text>
-  <rect x="70" y="135" width="460" height="64" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
-  <text x="300" y="175" text-anchor="middle" font-size="21" font-weight="700" fill="#312e81">agent: runs tests, reads all the output</text>
-  <g font-size="18" font-weight="600" fill="#374151" text-anchor="middle">
-    <rect x="70" y="218" width="140" height="60" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="2"/><text x="140" y="254">app copy</text>
-    <rect x="230" y="218" width="140" height="60" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="2"/><text x="300" y="254">test runner</text>
-    <rect x="390" y="218" width="140" height="60" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="2"/><text x="460" y="254">browser</text>
-    <rect x="70" y="295" width="140" height="60" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="2"/><text x="140" y="331">load gen</text>
-    <rect x="230" y="295" width="140" height="60" rx="10" fill="#ffffff" stroke="#9ca3af" stroke-width="2"/><text x="300" y="331">DB / mocks</text>
+  <rect x="40" y="80" width="520" height="300" rx="18" fill="#2A1231" stroke="#F87171" stroke-width="2.5" stroke-dasharray="10 7"/>
+  <text x="62" y="114" font-size="19" font-weight="700" fill="#FCA5A5">ONE SANDBOX CONTAINER · lives for one session</text>
+  <rect x="70" y="135" width="460" height="64" rx="12" fill="#2B1F63" stroke="#818CF8" stroke-width="2"/>
+  <text x="300" y="175" text-anchor="middle" font-size="21" font-weight="700" fill="#E0E3FF">agent: runs tests, reads all the output</text>
+  <g font-size="18" font-weight="600" fill="#E4E1F5" text-anchor="middle">
+    <rect x="70" y="218" width="140" height="60" rx="10" fill="#221848" stroke="#6E64B0" stroke-width="2"/><text x="140" y="254">app copy</text>
+    <rect x="230" y="218" width="140" height="60" rx="10" fill="#221848" stroke="#6E64B0" stroke-width="2"/><text x="300" y="254">test runner</text>
+    <rect x="390" y="218" width="140" height="60" rx="10" fill="#221848" stroke="#6E64B0" stroke-width="2"/><text x="460" y="254">browser</text>
+    <rect x="70" y="295" width="140" height="60" rx="10" fill="#221848" stroke="#6E64B0" stroke-width="2"/><text x="140" y="331">load gen</text>
+    <rect x="230" y="295" width="140" height="60" rx="10" fill="#221848" stroke="#6E64B0" stroke-width="2"/><text x="300" y="331">DB / mocks</text>
   </g>
-  <text x="460" y="322" text-anchor="middle" font-size="17" fill="#991b1b">all sharing</text>
-  <text x="460" y="344" text-anchor="middle" font-size="17" fill="#991b1b">one CPU + memory</text>
+  <text x="460" y="322" text-anchor="middle" font-size="17" fill="#FCA5A5">all sharing</text>
+  <text x="460" y="344" text-anchor="middle" font-size="17" fill="#FCA5A5">one CPU + memory</text>
 
-  <line x1="560" y1="230" x2="636" y2="230" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow-red)"/>
-  <rect x="640" y="170" width="140" height="120" rx="14" fill="#ffffff" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="6 5"/>
-  <text x="710" y="212" text-anchor="middle" font-size="19" font-weight="700" fill="#991b1b">results</text>
-  <text x="710" y="240" text-anchor="middle" font-size="17" fill="#991b1b">gone when the</text>
-  <text x="710" y="262" text-anchor="middle" font-size="17" fill="#991b1b">session ends</text>
+  <line x1="560" y1="230" x2="636" y2="230" stroke="#F87171" stroke-width="2.5" marker-end="url(#arrow-red)"/>
+  <rect x="640" y="170" width="140" height="120" rx="14" fill="#221848" stroke="#F87171" stroke-width="2.5" stroke-dasharray="6 5"/>
+  <text x="710" y="212" text-anchor="middle" font-size="19" font-weight="700" fill="#FCA5A5">results</text>
+  <text x="710" y="240" text-anchor="middle" font-size="17" fill="#FCA5A5">gone when the</text>
+  <text x="710" y="262" text-anchor="middle" font-size="17" fill="#FCA5A5">session ends</text>
 
   <!-- ===== RIGHT: tests via Testkube ===== -->
-  <text x="840" y="52" font-size="28" font-weight="700" fill="#1f2937">Agent orchestrates, Testkube executes</text>
+  <text x="840" y="52" font-size="28" font-weight="700" fill="#FFFFFF">Agent orchestrates, Testkube executes</text>
 
-  <rect x="840" y="80" width="210" height="80" rx="14" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5"/>
-  <text x="945" y="114" text-anchor="middle" font-size="21" font-weight="700" fill="#312e81">agent</text>
-  <text x="945" y="140" text-anchor="middle" font-size="16" fill="#4b5563">plans · asks · decides</text>
+  <rect x="840" y="80" width="210" height="80" rx="14" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/>
+  <text x="945" y="114" text-anchor="middle" font-size="21" font-weight="700" fill="#E0E3FF">agent</text>
+  <text x="945" y="140" text-anchor="middle" font-size="16" fill="#C4BFE6">plans · asks · decides</text>
 
-  <rect x="1100" y="80" width="460" height="80" rx="14" fill="#f9fafb" stroke="#9ca3af" stroke-width="2"/>
-  <text x="1330" y="114" text-anchor="middle" font-size="19" font-weight="600" fill="#374151">CI · schedules · k8s events</text>
-  <text x="1330" y="140" text-anchor="middle" font-size="19" font-weight="600" fill="#374151">people · other agents</text>
+  <rect x="1100" y="80" width="460" height="80" rx="14" fill="#221848" stroke="#6E64B0" stroke-width="2"/>
+  <text x="1330" y="114" text-anchor="middle" font-size="19" font-weight="600" fill="#E4E1F5">CI · schedules · k8s events</text>
+  <text x="1330" y="140" text-anchor="middle" font-size="19" font-weight="600" fill="#E4E1F5">people · other agents</text>
 
-  <rect x="840" y="210" width="720" height="90" rx="14" fill="#ffffff" stroke="#1f2937" stroke-width="2.5"/>
-  <text x="1200" y="246" text-anchor="middle" font-size="24" font-weight="700" fill="#1f2937">Testkube: shared system of record</text>
-  <text x="1200" y="278" text-anchor="middle" font-size="18" fill="#4b5563">every run kept · logs · artifacts · history · flake rate · tags</text>
+  <rect x="840" y="210" width="720" height="90" rx="14" fill="#221848" stroke="#8B80D9" stroke-width="2.5"/>
+  <text x="1200" y="246" text-anchor="middle" font-size="24" font-weight="700" fill="#FFFFFF">Testkube: shared system of record</text>
+  <text x="1200" y="278" text-anchor="middle" font-size="18" fill="#C4BFE6">every run kept · logs · artifacts · history · flake rate · tags</text>
 
-  <line x1="945" y1="160" x2="945" y2="206" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
-  <text x="960" y="190" font-size="16" fill="#4b5563">MCP</text>
-  <line x1="1330" y1="160" x2="1330" y2="206" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+  <line x1="945" y1="160" x2="945" y2="206" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+  <text x="960" y="190" font-size="16" fill="#C4BFE6">MCP</text>
+  <line x1="1330" y1="160" x2="1330" y2="206" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
 
-  <rect x="840" y="352" width="720" height="70" rx="14" fill="#f3f4f6" stroke="#1f2937" stroke-width="2"/>
-  <text x="862" y="394" font-size="19" font-weight="700" fill="#1f2937">Your Kubernetes environments</text>
-  <g fill="#4f46e5">
+  <rect x="840" y="352" width="720" height="70" rx="14" fill="#1C1440" stroke="#8B80D9" stroke-width="2"/>
+  <text x="862" y="394" font-size="19" font-weight="700" fill="#FFFFFF">Your Kubernetes environments</text>
+  <g fill="#FFAB40">
     <rect x="1170" y="372" width="40" height="30" rx="6"/><rect x="1220" y="372" width="40" height="30" rx="6"/>
     <rect x="1270" y="372" width="40" height="30" rx="6"/><rect x="1320" y="372" width="40" height="30" rx="6"/>
     <rect x="1370" y="372" width="40" height="30" rx="6"/><rect x="1420" y="372" width="40" height="30" rx="6"/>
     <rect x="1470" y="372" width="40" height="30" rx="6"/>
   </g>
-  <line x1="1200" y1="304" x2="1200" y2="348" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+  <line x1="1200" y1="304" x2="1200" y2="348" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
 
   <!-- ===== comparison table ===== -->
-  <line x1="40" y1="452" x2="1560" y2="452" stroke="#e5e7eb" stroke-width="2"/>
-  <g font-size="17" font-weight="700" fill="#6b7280">
+  <line x1="40" y1="452" x2="1560" y2="452" stroke="#3A2F6E" stroke-width="2"/>
+  <g font-size="17" font-weight="700" fill="#FFAB40">
     <text x="40" y="478">CONCERN</text>
     <text x="330" y="478">IN THE SANDBOX</text>
     <text x="960" y="478">WITH TESTKUBE</text>
@@ -71,31 +70,31 @@
 
   <!-- rows: y = 500 + i*72 -->
   <g font-size="20">
-    <rect x="40" y="496" width="1520" height="62" rx="10" fill="#f9fafb"/>
-    <text x="60" y="535" font-weight="700" fill="#1f2937">Scale</text>
-    <text x="330" y="535" fill="#991b1b">✗ one container's CPU and memory</text>
-    <text x="960" y="535" fill="#166534">✓ shards and workers across the cluster</text>
+    <rect x="40" y="496" width="1520" height="62" rx="10" fill="#221848"/>
+    <text x="60" y="535" font-weight="700" fill="#FFFFFF">Scale</text>
+    <text x="330" y="535" fill="#FCA5A5">✗ one container's CPU and memory</text>
+    <text x="960" y="535" fill="#86EFAC">✓ shards and workers across the cluster</text>
 
-    <text x="60" y="607" font-weight="700" fill="#1f2937">Environment</text>
-    <text x="330" y="607" fill="#991b1b">✗ a stand-in: no real network, services, secrets</text>
-    <text x="960" y="607" fill="#166534">✓ runs where the app runs; secrets stay in-cluster</text>
+    <text x="60" y="607" font-weight="700" fill="#FFFFFF">Environment</text>
+    <text x="330" y="607" fill="#FCA5A5">✗ a stand-in: no real network, services, secrets</text>
+    <text x="960" y="607" fill="#86EFAC">✓ runs where the app runs; secrets stay in-cluster</text>
 
-    <rect x="40" y="640" width="1520" height="62" rx="10" fill="#f9fafb"/>
-    <text x="60" y="679" font-weight="700" fill="#1f2937">History</text>
-    <text x="330" y="679" fill="#991b1b">✗ gone with the session: no trends, no flake rate</text>
-    <text x="960" y="679" fill="#166534">✓ every run kept; triage compares with history</text>
+    <rect x="40" y="640" width="1520" height="62" rx="10" fill="#221848"/>
+    <text x="60" y="679" font-weight="700" fill="#FFFFFF">History</text>
+    <text x="330" y="679" fill="#FCA5A5">✗ gone with the session: no trends, no flake rate</text>
+    <text x="960" y="679" fill="#86EFAC">✓ every run kept; triage compares with history</text>
 
-    <text x="60" y="751" font-weight="700" fill="#1f2937">Trust</text>
-    <text x="330" y="751" fill="#991b1b">✗ the agent reports on its own work</text>
-    <text x="960" y="751" fill="#166534">✓ independent record, auditable by people</text>
+    <text x="60" y="751" font-weight="700" fill="#FFFFFF">Trust</text>
+    <text x="330" y="751" fill="#FCA5A5">✗ the agent reports on its own work</text>
+    <text x="960" y="751" fill="#86EFAC">✓ independent record, auditable by people</text>
 
-    <rect x="40" y="784" width="1520" height="62" rx="10" fill="#f9fafb"/>
-    <text x="60" y="823" font-weight="700" fill="#1f2937">Shared</text>
-    <text x="330" y="823" fill="#991b1b">✗ one agent's private, one-off setup</text>
-    <text x="960" y="823" fill="#166534">✓ same tests for CI, schedules, people, agents</text>
+    <rect x="40" y="784" width="1520" height="62" rx="10" fill="#221848"/>
+    <text x="60" y="823" font-weight="700" fill="#FFFFFF">Shared</text>
+    <text x="330" y="823" fill="#FCA5A5">✗ one agent's private, one-off setup</text>
+    <text x="960" y="823" fill="#86EFAC">✓ same tests for CI, schedules, people, agents</text>
 
-    <text x="60" y="895" font-weight="700" fill="#1f2937">Agent context</text>
-    <text x="330" y="895" fill="#991b1b">✗ raw test output floods it (tokens, time)</text>
-    <text x="960" y="895" fill="#166534">✓ queries only what it needs (Executor: $0.003)</text>
+    <text x="60" y="895" font-weight="700" fill="#FFFFFF">Agent context</text>
+    <text x="330" y="895" fill="#FCA5A5">✗ raw test output floods it (tokens, time)</text>
+    <text x="960" y="895" fill="#86EFAC">✓ queries only what it needs (Executor: $0.003)</text>
   </g>
 </svg>

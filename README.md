@@ -83,7 +83,9 @@ session interactively. The terminal also prints the session ID when each agent f
 
 [`docs/diagrams`](docs/diagrams) has slide-ready SVG and PNG versions of: the setup, the quality
 loop, CI vs Kubernetes fan-out, the Selector, Triage and Gate agents in detail, and "why not run
-the tests in the agent's sandbox?".
+the tests in the agent's sandbox?". They're styled for the TestCon deck (Nunito, dark
+background, transparent PNGs). Re-render after editing an SVG with
+`cd tests/e2e && cp ../../scripts/diagrams/render.mjs .render.mjs && node .render.mjs ../../docs/diagrams; rm .render.mjs`.
 
 ### AI spend
 
