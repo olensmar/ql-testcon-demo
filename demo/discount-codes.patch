@@ -1,0 +1,250 @@
+diff --git a/app/public/index.html b/app/public/index.html
+index c1b78e9..3413a9d 100644
+--- a/app/public/index.html
++++ b/app/public/index.html
+@@ -36,12 +36,14 @@
+       <ul data-testid="cart-items"></ul>
+       <div class="row"><span>Subtotal</span><span data-testid="cart-subtotal">$0.00</span></div>
+       <form id="checkout-form">
++        <input data-testid="discount-input" placeholder="Discount code (optional)" autocomplete="off">
+         <button type="submit" data-testid="checkout-button" disabled>Checkout</button>
+       </form>
+       <div data-testid="order-summary" hidden>
+         <h3>Order confirmed</h3>
+         <div class="row"><span>Subtotal</span><span data-testid="order-subtotal"></span></div>
+         <div class="row"><span>Shipping</span><span data-testid="order-shipping"></span></div>
++        <div class="row" data-testid="order-discount-row" hidden><span>Discount</span><span data-testid="order-discount"></span></div>
+         <div class="row total"><span>Total</span><span data-testid="order-total"></span></div>
+       </div>
+       <p class="error" data-testid="error" hidden></p>
+@@ -85,6 +87,8 @@
+         const order = await api("POST", "/api/checkout", checkoutRequest());
+         $("order-subtotal").textContent = money(order.subtotal);
+         $("order-shipping").textContent = money(order.shipping);
++        $("order-discount").textContent = `−${money(order.discount)}`;
++        $("order-discount-row").hidden = order.discount === 0;
+         $("order-total").textContent = money(order.total);
+         $("order-summary").hidden = false;
+       } catch (err) {
+@@ -94,7 +98,8 @@
+     }
+ 
+     function checkoutRequest() {
+-      return { cartId };
++      const discountCode = $("discount-input").value.trim();
++      return discountCode ? { cartId, discountCode } : { cartId };
+     }
+ 
+     async function init() {
+diff --git a/app/src/checkout.ts b/app/src/checkout.ts
+index 87902d2..44d4628 100644
+--- a/app/src/checkout.ts
++++ b/app/src/checkout.ts
+@@ -3,16 +3,31 @@ import { type CartItem, HttpError, round, subtotal } from "./cart.ts";
+ export const FREE_SHIPPING_THRESHOLD = 50;
+ export const SHIPPING_FEE = 5;
+ 
++/** Percentage discount codes, as a fraction of the order subtotal. */
++export const DISCOUNT_CODES: Record<string, number> = {
++  SAVE10: 0.1,
++  WELCOME20: 0.2,
++};
++
+ export interface OrderTotals {
+   subtotal: number;
+   shipping: number;
++  discount: number;
+   total: number;
+ }
+ 
+-export function calculateTotals(items: CartItem[]): OrderTotals {
++export function calculateTotals(items: CartItem[], discountCode?: string): OrderTotals {
+   if (items.length === 0) throw new HttpError(400, "cart is empty");
+ 
+   const sub = subtotal(items);
+   const shipping = sub >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
+-  return { subtotal: sub, shipping, total: round(sub + shipping) };
++  const discount = discountFor(sub + shipping, discountCode);
++  return { subtotal: sub, shipping, discount, total: round(sub + shipping - discount) };
++}
++
++function discountFor(amount: number, code?: string): number {
++  if (!code) return 0;
++  const rate = DISCOUNT_CODES[code.trim().toUpperCase()];
++  if (rate === undefined) throw new HttpError(400, `invalid discount code ${code}`);
++  return round(amount * rate);
+ }
+diff --git a/app/src/server.ts b/app/src/server.ts
+index 0b4233f..67e59ed 100644
+--- a/app/src/server.ts
++++ b/app/src/server.ts
+@@ -29,7 +29,7 @@ const routes: Array<[method: string, pattern: RegExp, handler: Handler]> = [
+     /^\/api\/checkout$/,
+     (_req, body) => {
+       const cart = getCart(body.cartId) ?? notFound(`cart ${body.cartId} not found`);
+-      return { cartId: cart.id, items: cart.items, ...calculateTotals(cart.items) };
++      return { cartId: cart.id, items: cart.items, ...calculateTotals(cart.items, body.discountCode) };
+     },
+   ],
+ ];
+diff --git a/app/test/unit/checkout.test.ts b/app/test/unit/checkout.test.ts
+index f8c440b..d22c3ee 100644
+--- a/app/test/unit/checkout.test.ts
++++ b/app/test/unit/checkout.test.ts
+@@ -7,13 +7,30 @@ const stickers = { productId: "pod-stickers", name: "Pod Stickers", price: 6, qu
+ const mug = { productId: "kube-mug", name: "Kube Mug", price: 12, quantity: 1 };
+ 
+ test("orders of $50 or more ship free", () => {
+-  assert.deepEqual(calculateTotals([hoodie, stickers]), { subtotal: 51, shipping: 0, total: 51 });
++  assert.deepEqual(calculateTotals([hoodie, stickers]), { subtotal: 51, shipping: 0, discount: 0, total: 51 });
+ });
+ 
+ test("orders under $50 pay a $5 shipping fee", () => {
+-  assert.deepEqual(calculateTotals([mug]), { subtotal: 12, shipping: 5, total: 17 });
++  assert.deepEqual(calculateTotals([mug]), { subtotal: 12, shipping: 5, discount: 0, total: 17 });
+ });
+ 
+ test("an empty cart cannot be checked out", () => {
+   assert.throws(() => calculateTotals([]), /cart is empty/);
+ });
++
++test("SAVE10 takes 10% off the order", () => {
++  assert.deepEqual(calculateTotals([hoodie, stickers], "SAVE10"), {
++    subtotal: 51,
++    shipping: 0,
++    discount: 5.1,
++    total: 45.9,
++  });
++});
++
++test("discount codes are case-insensitive", () => {
++  assert.equal(calculateTotals([hoodie, stickers], "save10").discount, 5.1);
++});
++
++test("unknown discount codes are rejected", () => {
++  assert.throws(() => calculateTotals([hoodie], "FREESTUFF"), /invalid discount code/);
++});
+diff --git a/tests/api/checkout.postman_collection.json b/tests/api/checkout.postman_collection.json
+index 8d250de..a0fd544 100644
+--- a/tests/api/checkout.postman_collection.json
++++ b/tests/api/checkout.postman_collection.json
+@@ -1,6 +1,6 @@
+ {
+   "info": {
+-    "name": "Kube Shop – Checkout API",
++    "name": "Kube Shop \u2013 Checkout API",
+     "description": "Checkout totals: subtotal, shipping and total",
+     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+   },
+@@ -163,6 +163,85 @@
+         }
+       }
+     },
++    {
++      "name": "Checkout under $50 with SAVE10",
++      "event": [
++        {
++          "listen": "test",
++          "script": {
++            "type": "text/javascript",
++            "exec": [
++              "const order = pm.response.json();",
++              "pm.test(\"returns 200\", () => pm.response.to.have.status(200));",
++              "pm.test(\"discount is 10% of the 30.00 subtotal\", () => pm.expect(order.discount).to.eql(3));",
++              "pm.test(\"shipping is still 5.00\", () => pm.expect(order.shipping).to.eql(5));",
++              "pm.test(\"total is 32.00\", () => pm.expect(order.total).to.eql(32));"
++            ]
++          }
++        }
++      ],
++      "request": {
++        "method": "POST",
++        "header": [
++          {
++            "key": "Content-Type",
++            "value": "application/json"
++          }
++        ],
++        "url": {
++          "raw": "{{baseUrl}}/api/checkout",
++          "host": [
++            "{{baseUrl}}"
++          ],
++          "path": [
++            "api",
++            "checkout"
++          ]
++        },
++        "body": {
++          "mode": "raw",
++          "raw": "{\"cartId\": \"{{smallCart}}\", \"discountCode\": \"SAVE10\"}"
++        }
++      }
++    },
++    {
++      "name": "Checkout with an invalid discount code is rejected",
++      "event": [
++        {
++          "listen": "test",
++          "script": {
++            "type": "text/javascript",
++            "exec": [
++              "pm.test(\"returns 400\", () => pm.response.to.have.status(400));",
++              "pm.test(\"explains the error\", () => pm.expect(pm.response.json().error).to.include(\"invalid discount code\"));"
++            ]
++          }
++        }
++      ],
++      "request": {
++        "method": "POST",
++        "header": [
++          {
++            "key": "Content-Type",
++            "value": "application/json"
++          }
++        ],
++        "url": {
++          "raw": "{{baseUrl}}/api/checkout",
++          "host": [
++            "{{baseUrl}}"
++          ],
++          "path": [
++            "api",
++            "checkout"
++          ]
++        },
++        "body": {
++          "mode": "raw",
++          "raw": "{\"cartId\": \"{{smallCart}}\", \"discountCode\": \"FREESTUFF\"}"
++        }
++      }
++    },
+     {
+       "name": "Create cart over $50",
+       "event": [
+diff --git a/tests/e2e/checkout.spec.ts b/tests/e2e/checkout.spec.ts
+index 1ea50c0..45368ea 100644
+--- a/tests/e2e/checkout.spec.ts
++++ b/tests/e2e/checkout.spec.ts
+@@ -27,3 +27,21 @@ test("the order summary lists the cart subtotal", async ({ page }) => {
+   await page.getByTestId("checkout-button").click();
+   await expect(page.getByTestId("order-subtotal")).toHaveText("$30.00");
+ });
++
++test("SAVE10 takes 10% off the subtotal", async ({ page }) => {
++  await addToCart(page, "kube-mug", "cluster-cap");
++  await page.getByTestId("discount-input").fill("SAVE10");
++  await page.getByTestId("checkout-button").click();
++  await expect(page.getByTestId("order-subtotal")).toHaveText("$30.00");
++  await expect(page.getByTestId("order-discount")).toHaveText("−$3.00");
++  await expect(page.getByTestId("order-shipping")).toHaveText("$5.00");
++  await expect(page.getByTestId("order-total")).toHaveText("$32.00");
++});
++
++test("an invalid discount code shows an error", async ({ page }) => {
++  await addToCart(page, "kube-mug");
++  await page.getByTestId("discount-input").fill("FREESTUFF");
++  await page.getByTestId("checkout-button").click();
++  await expect(page.getByTestId("error")).toHaveText("invalid discount code FREESTUFF");
++  await expect(page.getByTestId("order-summary")).toBeHidden();
++});
