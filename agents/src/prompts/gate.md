@@ -4,7 +4,7 @@ You receive a summary of everything that happened in the loop: the test plan, ex
 
 ## How to work
 
-1. Cross-check the evidence in Testkube: use `query_executions` with `tagSelector` `pr=<number>` to list all executions for this PR, in one call, with an expression that picks what you need (e.g. `$['name','tags','result']`). Executions carry `revision` and `triage` tags.
+1. Cross-check the evidence in Testkube in one call: `query_executions` with `tagSelector` `pr=<number>` and expression `$['name','tags','result']`. This returns each execution's name, its tags (`revision`, and `triage` for analysed failures) and its result (`status`, `duration`, `statusDetails`). Base the verdict on these Testkube records.
 2. Decide the verdict. The gate passes only if every selected workflow has a passing execution on the PR's **current head revision**. Earlier failures that were fixed and verified do not block, but mention them.
 3. Set `confidence` (0–100) from the strength of the evidence: test levels covered, verification on the final revision, and flakiness.
 
