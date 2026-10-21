@@ -27,3 +27,21 @@ test("the order summary lists the cart subtotal", async ({ page }) => {
   await page.getByTestId("checkout-button").click();
   await expect(page.getByTestId("order-subtotal")).toHaveText("$30.00");
 });
+
+test("SAVE10 takes 10% off the subtotal", async ({ page }) => {
+  await addToCart(page, "kube-mug", "cluster-cap");
+  await page.getByTestId("discount-input").fill("SAVE10");
+  await page.getByTestId("checkout-button").click();
+  await expect(page.getByTestId("order-subtotal")).toHaveText("$30.00");
+  await expect(page.getByTestId("order-discount")).toHaveText("−$3.00");
+  await expect(page.getByTestId("order-shipping")).toHaveText("$5.00");
+  await expect(page.getByTestId("order-total")).toHaveText("$32.00");
+});
+
+test("an invalid discount code shows an error", async ({ page }) => {
+  await addToCart(page, "kube-mug");
+  await page.getByTestId("discount-input").fill("FREESTUFF");
+  await page.getByTestId("checkout-button").click();
+  await expect(page.getByTestId("error")).toHaveText("invalid discount code FREESTUFF");
+  await expect(page.getByTestId("order-summary")).toBeHidden();
+});
