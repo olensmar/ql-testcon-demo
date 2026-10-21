@@ -8,7 +8,6 @@ import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseArgs, promisify } from "node:util";
-import { readFile } from "node:fs/promises";
 import { parse, stringify } from "yaml";
 import { executePlan } from "./agents/executor.ts";
 import { reportGate } from "./agents/gate.ts";
@@ -127,17 +126,12 @@ async function prepareWorktree(pr: github.PullRequest): Promise<string> {
   return dir;
 }
 
-/** Labels a workflow quarantine=true in Testkube (from testkube/<name>.yaml, keeping live config defaults). */
+/** Labels a workflow quarantine=true in Testkube, keeping the rest of its live definition. */
 async function quarantine(workflow: string) {
   const testkube = await connectTestkube();
   try {
-    const doc = parse(await readFile(join(REPO_ROOT, "testkube", `${workflow}.yaml`), "utf8"));
-    const { workflow: live } = await testkube.call("get_workflow_definition", { workflowName: workflow });
-    for (const [key, param] of Object.entries<any>(doc.spec.config ?? {})) {
-      const liveDefault = live.spec?.config?.[key]?.default;
-      if (liveDefault !== undefined) param.default = liveDefault?.value ?? liveDefault;
-    }
-    doc.metadata.labels.quarantine = "true";
+    const doc = parse(await testkube.call<string>("get_workflow_definition", { workflowName: workflow }));
+    doc.metadata.labels = { ...doc.metadata.labels, quarantine: "true" };
     await testkube.call("update_workflow", { workflowName: workflow, yaml: stringify(doc) });
     new AgentLog("remediator").info(`🧪 quarantined ${workflow} (label quarantine=true)`);
   } finally {
