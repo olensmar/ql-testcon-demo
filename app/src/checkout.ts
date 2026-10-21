@@ -21,7 +21,7 @@ export function calculateTotals(items: CartItem[], discountCode?: string): Order
 
   const sub = subtotal(items);
   const shipping = sub >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
-  const discount = discountFor(sub + shipping, discountCode);
+  const discount = discountFor(sub, discountCode);
   return { subtotal: sub, shipping, discount, total: round(sub + shipping - discount) };
 }
 
