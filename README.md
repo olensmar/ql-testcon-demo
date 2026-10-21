@@ -46,9 +46,11 @@ E2E tests use a $30 + $5 shipping cart and fail: they expect $32.00 and get $31.
 
 ## Running it
 
-Prerequisites: a Testkube environment with a runner (here, minikube), the `testkube` CLI logged
-in (the agents use `testkube mcp serve`), `gh` logged in, Node ≥ 22.18, and Claude credentials
-for the Agent SDK (`ANTHROPIC_API_KEY`, or an existing Claude Code login).
+Prerequisites: a Testkube environment with a runner agent (here, in minikube on the laptop), a
+Testkube API token for that environment, `gh` logged in, Node ≥ 22.18, and Claude credentials
+for the Agent SDK (`ANTHROPIC_API_KEY`, or an existing Claude Code login). The agents talk to the
+**Testkube MCP server hosted by the control plane**; copy `agents/.env.example` to `agents/.env`
+and fill in the token.
 
 ```bash
 ./scripts/setup.sh            # npm ci, pre-pull images, apply workflows via MCP, green baseline on main
@@ -56,9 +58,6 @@ for the Agent SDK (`ANTHROPIC_API_KEY`, or an existing Claude Code login).
 cd agents && npm run loop -- --pr <number>
 # or: npm run watch            # waits for new PRs and runs the loop for each
 ```
-
-To use the hosted Testkube MCP endpoint instead of the local stdio server, set
-`TK_ACCESS_TOKEN`, `TK_ORG_ID` and `TK_ENV_ID`.
 
 Every execution is tagged with `pr` and `revision` (through the workflows' `execution.tags`
 expressions), and failed executions also get a `triage` tag. In the Testkube dashboard you can

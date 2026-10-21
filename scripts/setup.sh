@@ -4,7 +4,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-command -v testkube >/dev/null || { echo "testkube CLI not found (needed for 'testkube mcp serve')"; exit 1; }
+[[ -f "$ROOT/agents/.env" ]] || { echo "create agents/.env from agents/.env.example (Testkube MCP URL + API token)"; exit 1; }
 command -v gh >/dev/null || { echo "gh CLI not found"; exit 1; }
 
 (cd "$ROOT/agents" && npm ci)

@@ -19,7 +19,7 @@ import type { ExecutionReport, RemediationReport, TestPlan, TriageReport } from 
 import { connectTestkube } from "./lib/testkube.ts";
 import { sessions } from "./lib/agent.ts";
 import { buildSpend, printSpend, spendMarkdown, type SpendReport } from "./lib/spend.ts";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { AgentLog, banner, colors as c, statusIcon } from "./lib/ui.ts";
 
@@ -150,11 +150,17 @@ async function prepareWorktree(pr: github.PullRequest): Promise<string> {
   return dir;
 }
 
-/** Labels a workflow quarantine=true in Testkube, keeping the rest of its live definition. */
+/** Labels a workflow quarantine=true in Testkube: the repo's YAML plus the label, keeping live config defaults. */
 async function quarantine(workflow: string) {
   const testkube = await connectTestkube();
   try {
-    const doc = parse(await testkube.call<string>("get_workflow_definition", { workflowName: workflow }));
+    const doc = parse(await readFile(join(REPO_ROOT, "testkube", `${workflow}.yaml`), "utf8"));
+    const raw = await testkube.call("get_workflow_definition", { workflowName: workflow });
+    const live = typeof raw === "string" ? parse(raw) : raw.workflow; // YAML or JSON, depending on the server
+    for (const [key, param] of Object.entries<any>(doc.spec.config ?? {})) {
+      const liveDefault = live?.spec?.config?.[key]?.default;
+      if (liveDefault !== undefined) param.default = liveDefault?.value ?? liveDefault;
+    }
     doc.metadata.labels = { ...doc.metadata.labels, quarantine: "true" };
     await testkube.call("update_workflow", { workflowName: workflow, yaml: stringify(doc) });
     new AgentLog("remediator").info(`🧪 quarantined ${workflow} (label quarantine=true)`);

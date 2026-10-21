@@ -10,7 +10,7 @@
 ## 15 minutes before
 
 - [ ] `./scripts/prewarm.sh` (images may have been evicted)
-- [ ] `testkube mcp serve` works: run `cd agents && npm run setup` (it is idempotent)
+- [ ] The hosted Testkube MCP endpoint is reachable with the token in `agents/.env`: run `cd agents && npm run setup` (it is idempotent)
 - [ ] Credentials: `gh auth status`, plus `ANTHROPIC_API_KEY` exported (or a Claude Code login)
 - [ ] `./scripts/reset-demo.sh` (bug only) or `./scripts/reset-demo.sh --flaky` (bug plus a flaky browse run), so a fresh PR is open but **not** yet processed. Alternatively, start `npm run watch` and run reset live on stage. Don't run `shop-e2e-browse` between the reset and the loop, because the flake alternates by execution number.
 - [ ] Screen layout:
@@ -42,4 +42,4 @@
 - **GitHub or network hiccup:** `gh` calls retry automatically. Re-running `npm run loop -- --pr <n>` is safe; the agents re-plan from the PR's current head.
 - **A workflow aborted (image pull or scheduling):** the Executor retries infra failures once on its own. Otherwise run `./scripts/prewarm.sh`.
 - **The PR is already fixed from a previous run:** run `./scripts/reset-demo.sh` for a fresh PR.
-- **No Testkube MCP (CLI auth expired):** run `testkube login`, or export `TK_ACCESS_TOKEN`, `TK_ORG_ID` and `TK_ENV_ID` to use the hosted endpoint.
+- **Testkube MCP returns 401:** the API token in `agents/.env` has expired or lacks access to the environment. Create a new one in the Testkube dashboard.

@@ -1,6 +1,7 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import type { McpServerConfig } from "@anthropic-ai/claude-agent-sdk";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 
 /** Name the Testkube MCP server is registered under; tools appear as mcp__testkube__<tool>. */
@@ -9,37 +10,36 @@ export const TESTKUBE = "testkube";
 /** Fully-qualified tool names for allowedTools lists. */
 export const tk = (...tools: string[]) => tools.map((t) => `mcp__${TESTKUBE}__${t}`);
 
+// Credentials live in agents/.env (see .env.example); real environment variables win.
+const ENV_FILE = join(import.meta.dirname, "..", "..", ".env");
+if (existsSync(ENV_FILE)) process.loadEnvFile(ENV_FILE);
+
 /**
- * Testkube MCP connection. By default spawns the local stdio server (`testkube mcp serve`),
- * which reuses the authenticated CLI context. Set TK_ACCESS_TOKEN, TK_ORG_ID and TK_ENV_ID to
- * use the hosted endpoint instead.
+ * The Testkube MCP server hosted by the Testkube control plane, e.g.
+ *   https://api.testkube.dev/organizations/<org>/environments/<env>/mcp
+ * authenticated with a Testkube API token. Nothing runs locally.
  */
-function hostedUrl(): string | undefined {
-  const { TK_ACCESS_TOKEN, TK_ORG_ID, TK_ENV_ID } = process.env;
-  if (!TK_ACCESS_TOKEN || !TK_ORG_ID || !TK_ENV_ID) return undefined;
-  return `https://api.testkube.io/organizations/${TK_ORG_ID}/environments/${TK_ENV_ID}/mcp`;
+function endpoint(): { url: string; headers: Record<string, string> } {
+  const { TK_MCP_URL, TK_ACCESS_TOKEN } = process.env;
+  const missing = Object.entries({ TK_MCP_URL, TK_ACCESS_TOKEN })
+    .filter(([, v]) => !v)
+    .map(([k]) => k);
+  if (missing.length > 0) {
+    throw new Error(`Testkube MCP: set ${missing.join(" and ")} (in agents/.env, see .env.example)`);
+  }
+  return { url: TK_MCP_URL!, headers: { Authorization: `Bearer ${TK_ACCESS_TOKEN}` } };
 }
 
 export function testkubeMcpServer(): Record<string, McpServerConfig> {
-  const url = hostedUrl();
-  if (url) {
-    return {
-      [TESTKUBE]: { type: "http", url, headers: { Authorization: `Bearer ${process.env.TK_ACCESS_TOKEN}` } },
-    };
-  }
-  return { [TESTKUBE]: { type: "stdio", command: "testkube", args: ["mcp", "serve"] } };
+  const { url, headers } = endpoint();
+  return { [TESTKUBE]: { type: "http", url, headers } };
 }
 
-/** A plain (no-LLM) MCP client, used by setup.ts and for deterministic lookups in loop.ts. */
+/** A plain (no-LLM) MCP client to the same endpoint, used by setup.ts, flake.ts and loop.ts. */
 export async function connectTestkube(): Promise<TestkubeClient> {
+  const { url, headers } = endpoint();
   const client = new Client({ name: "ql-testcon-demo", version: "1.0.0" });
-  const url = hostedUrl();
-  const transport = url
-    ? new StreamableHTTPClientTransport(new URL(url), {
-        requestInit: { headers: { Authorization: `Bearer ${process.env.TK_ACCESS_TOKEN}` } },
-      })
-    : new StdioClientTransport({ command: "testkube", args: ["mcp", "serve"], stderr: "ignore" });
-  await client.connect(transport);
+  await client.connect(new StreamableHTTPClientTransport(new URL(url), { requestInit: { headers } }));
   return new TestkubeClient(client);
 }
 
