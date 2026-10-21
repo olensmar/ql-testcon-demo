@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "Plushie Shop – Checkout API",
+    "name": "Plushie Shop \u2013 Checkout API",
     "description": "Checkout totals: subtotal, shipping and total",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -160,6 +160,85 @@
         "body": {
           "mode": "raw",
           "raw": "{\"cartId\":\"{{smallCart}}\"}"
+        }
+      }
+    },
+    {
+      "name": "Checkout under $50 with SAVE10",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const order = pm.response.json();",
+              "pm.test(\"returns 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"discount is 10% of the 30.00 subtotal\", () => pm.expect(order.discount).to.eql(3));",
+              "pm.test(\"shipping is still 5.00\", () => pm.expect(order.shipping).to.eql(5));",
+              "pm.test(\"total is 32.00\", () => pm.expect(order.total).to.eql(32));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/checkout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "checkout"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"cartId\": \"{{smallCart}}\", \"discountCode\": \"SAVE10\"}"
+        }
+      }
+    },
+    {
+      "name": "Checkout with an invalid discount code is rejected",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"returns 400\", () => pm.response.to.have.status(400));",
+              "pm.test(\"explains the error\", () => pm.expect(pm.response.json().error).to.include(\"invalid discount code\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/checkout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "checkout"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"cartId\": \"{{smallCart}}\", \"discountCode\": \"FREESTUFF\"}"
         }
       }
     },
