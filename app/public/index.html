@@ -73,9 +73,16 @@
       $("checkout-button").disabled = count === 0;
     }
 
-    async function addToCart(productId) {
-      cartId ??= (await api("POST", "/api/cart")).id;
-      renderCart(await api("POST", `/api/cart/${cartId}/items`, { productId }));
+    // Clicks are queued so the cart is created once and responses render in order.
+    let pending = Promise.resolve();
+    function addToCart(productId) {
+      pending = pending
+        .then(async () => {
+          cartId ??= (await api("POST", "/api/cart")).id;
+          renderCart(await api("POST", `/api/cart/${cartId}/items`, { productId }));
+        })
+        .catch((err) => console.error(err));
+      return pending;
     }
 
     async function checkout(event) {

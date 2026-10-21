@@ -7,11 +7,11 @@
   <rect width="1600" height="1000" fill="#ffffff"/>
 
   <!-- GitHub -->
-  <rect x="40" y="80" width="400" height="190" rx="16" fill="#f9fafb" stroke="#1f2937" stroke-width="2.5"/>
-  <text x="240" y="130" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2937">GitHub</text>
-  <text x="240" y="175" text-anchor="middle" font-size="22" fill="#374151">Pull request</text>
-  <text x="240" y="208" text-anchor="middle" font-size="22" fill="#374151">PR comments from agents</text>
-  <text x="240" y="241" text-anchor="middle" font-size="22" fill="#374151">quality-gate status check</text>
+  <rect x="30" y="80" width="380" height="190" rx="16" fill="#f9fafb" stroke="#1f2937" stroke-width="2.5"/>
+  <text x="220" y="130" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2937">GitHub</text>
+  <text x="220" y="175" text-anchor="middle" font-size="22" fill="#374151">Pull request</text>
+  <text x="220" y="208" text-anchor="middle" font-size="22" fill="#374151">PR comments from agents</text>
+  <text x="220" y="241" text-anchor="middle" font-size="22" fill="#374151">quality-gate status check</text>
 
   <!-- Laptop -->
   <rect x="520" y="30" width="560" height="530" rx="20" fill="none" stroke="#9ca3af" stroke-width="2" stroke-dasharray="10 8"/>
@@ -42,15 +42,15 @@
   <text x="815" y="423" font-size="19" fill="#4b5563">MCP tool calls</text>
 
   <!-- Claude API -->
-  <rect x="1160" y="80" width="400" height="140" rx="16" fill="#f9fafb" stroke="#1f2937" stroke-width="2.5"/>
-  <text x="1360" y="137" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2937">Claude API</text>
-  <text x="1360" y="178" text-anchor="middle" font-size="21" fill="#374151">Opus · Sonnet · Haiku 5.5</text>
+  <rect x="1180" y="80" width="380" height="140" rx="16" fill="#f9fafb" stroke="#1f2937" stroke-width="2.5"/>
+  <text x="1370" y="137" text-anchor="middle" font-size="30" font-weight="700" fill="#1f2937">Claude API</text>
+  <text x="1370" y="178" text-anchor="middle" font-size="21" fill="#374151">Opus · Sonnet · Haiku 5.5</text>
 
   <!-- Testkube control plane -->
-  <rect x="1160" y="360" width="400" height="140" rx="16" fill="#f9fafb" stroke="#1f2937" stroke-width="2.5"/>
-  <text x="1360" y="415" text-anchor="middle" font-size="28" font-weight="700" fill="#1f2937">Testkube</text>
-  <text x="1360" y="455" text-anchor="middle" font-size="21" fill="#374151">control plane · history · logs</text>
-  <text x="1360" y="483" text-anchor="middle" font-size="21" fill="#374151">artifacts · tags</text>
+  <rect x="1180" y="360" width="380" height="140" rx="16" fill="#f9fafb" stroke="#1f2937" stroke-width="2.5"/>
+  <text x="1370" y="415" text-anchor="middle" font-size="28" font-weight="700" fill="#1f2937">Testkube</text>
+  <text x="1370" y="455" text-anchor="middle" font-size="21" fill="#374151">control plane · history · logs</text>
+  <text x="1370" y="483" text-anchor="middle" font-size="21" fill="#374151">artifacts · tags</text>
 
   <!-- Kubernetes cluster -->
   <rect x="520" y="620" width="1040" height="350" rx="20" fill="#f3f4f6" stroke="#1f2937" stroke-width="2.5"/>
@@ -79,28 +79,29 @@
   <text x="1105" y="827" font-size="18" fill="#4b5563">HTTP</text>
 
   <!-- arrows: GitHub <-> orchestrator -->
-  <line x1="444" y1="150" x2="551" y2="150" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <text x="458" y="138" font-size="18" fill="#4b5563">new PR · diff</text>
-  <line x1="551" y1="235" x2="444" y2="235" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <text x="456" y="268" font-size="18" fill="#4b5563">comments</text>
-  <text x="456" y="291" font-size="18" fill="#4b5563">fix commit</text>
-  <text x="456" y="314" font-size="18" fill="#4b5563">status</text>
+  <line x1="414" y1="150" x2="551" y2="150" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="420" y="138" font-size="18" fill="#4b5563">new PR</text>
+  <line x1="551" y1="235" x2="414" y2="235" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="420" y="268" font-size="18" fill="#4b5563">comments</text>
+  <text x="420" y="291" font-size="18" fill="#4b5563">fix commit</text>
+  <text x="420" y="314" font-size="18" fill="#4b5563">status</text>
 
   <!-- orchestrator <-> Claude -->
-  <line x1="1049" y1="150" x2="1156" y2="150" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
-  <text x="1102" y="138" text-anchor="middle" font-size="18" fill="#4b5563">prompts</text>
+  <line x1="1049" y1="150" x2="1176" y2="150" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+  <text x="1130" y="138" text-anchor="middle" font-size="18" fill="#4b5563">prompts</text>
 
   <!-- MCP -> Testkube -->
-  <polyline points="1049,492 1100,492 1100,430 1156,430" fill="none" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <text x="1112" y="530" font-size="18" fill="#4b5563">Testkube API</text>
+  <line x1="1049" y1="485" x2="1176" y2="485" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="1130" y="448" text-anchor="middle" font-size="18" fill="#4b5563">Testkube</text>
+  <text x="1130" y="470" text-anchor="middle" font-size="18" fill="#4b5563">API</text>
 
   <!-- Testkube -> cluster -->
-  <line x1="1360" y1="504" x2="1360" y2="616" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <text x="1375" y="555" font-size="18" fill="#4b5563">schedules runs</text>
-  <text x="1375" y="578" font-size="18" fill="#4b5563">collects results</text>
+  <line x1="1370" y1="504" x2="1370" y2="616" stroke="#4b5563" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="1385" y="555" font-size="18" fill="#4b5563">schedules runs</text>
+  <text x="1385" y="578" font-size="18" fill="#4b5563">collects results</text>
 
   <!-- GitHub -> cluster (clone) -->
-  <polyline points="240,274 240,790 516,790" fill="none" stroke="#4b5563" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow)"/>
-  <text x="258" y="770" font-size="18" fill="#4b5563">git clone @ PR commit</text>
-  <text x="258" y="815" font-size="18" fill="#4b5563">(no image build)</text>
+  <polyline points="220,274 220,790 516,790" fill="none" stroke="#4b5563" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow)"/>
+  <text x="238" y="770" font-size="18" fill="#4b5563">git clone @ PR commit</text>
+  <text x="238" y="815" font-size="18" fill="#4b5563">(no image build)</text>
 </svg>

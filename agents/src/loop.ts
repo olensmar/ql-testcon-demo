@@ -245,7 +245,7 @@ ${t.evidence.map((e) => `- ${e}`).join("\n")}
 
 **Suspect files:** ${t.suspectFiles.map((f) => `\`${f}\``).join(", ")}
 
-**Suggested fix:** ${t.suggestedFix}`;
+**Suggested fix:** ${t.suggestedFix}${t.rerunExecutionId ? `\n\n**Confirmed by re-run:** \`${t.rerunExecutionId}\` passed on the same revision` : ""}`;
   });
   return `### 🔎 Failure triage\n\n${sections.join("\n\n---\n\n")}${AGENT_FOOTER}`;
 }

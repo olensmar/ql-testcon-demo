@@ -39,6 +39,9 @@ export const TriageReport = z.object({
   evidence: z.array(z.string()).describe("Concrete facts: assertion messages, log lines, diff hunks"),
   suspectFiles: z.array(z.string()).describe("Repo-relative paths, with line numbers when known"),
   suggestedFix: z.string(),
+  rerunExecutionId: z
+    .string()
+    .describe("ID of the confirming re-run on the same revision (required for flake), or empty string"),
 });
 export type TriageReport = z.infer<typeof TriageReport>;
 
