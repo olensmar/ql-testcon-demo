@@ -27,7 +27,13 @@ export interface AgentResult<T> {
   costUsd: number;
   durationMs: number;
   turns: number;
+  /** Claude Code session ID; the transcript lives in ~/.claude/projects/<cwd>/<sessionId>.jsonl */
+  sessionId: string;
+  cwd: string;
 }
+
+/** Every agent session started in this process, for the run manifest. */
+export const sessions: Array<{ agent: string; sessionId: string; cwd: string; durationMs: number; costUsd: number }> = [];
 
 const PROMPT_DIR = join(import.meta.dirname, "..", "prompts");
 
@@ -83,8 +89,18 @@ export async function runAgent<T>(spec: AgentSpec<T>): Promise<AgentResult<T>> {
         throw new Error(`${spec.name} agent failed: ${message.subtype}`);
       }
       const output = spec.schema.parse(message.structured_output);
-      log.info(`done in ${(message.duration_ms / 1000).toFixed(1)}s · ${message.num_turns} turns`);
-      return { output, costUsd: message.total_cost_usd, durationMs: message.duration_ms, turns: message.num_turns };
+      const cwd = spec.cwd ?? process.cwd();
+      const agent = spec.qualifier ? `${spec.name}:${spec.qualifier}` : spec.name;
+      sessions.push({ agent, sessionId: message.session_id, cwd, durationMs: message.duration_ms, costUsd: message.total_cost_usd });
+      log.info(`done in ${(message.duration_ms / 1000).toFixed(1)}s · ${message.num_turns} turns · session ${message.session_id}`);
+      return {
+        output,
+        costUsd: message.total_cost_usd,
+        durationMs: message.duration_ms,
+        turns: message.num_turns,
+        sessionId: message.session_id,
+        cwd,
+      };
     }
   }
   throw new Error(`${spec.name} agent ended without a result`);

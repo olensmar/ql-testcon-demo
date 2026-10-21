@@ -17,6 +17,9 @@ import { triageFailure } from "./agents/triage.ts";
 import * as github from "./lib/github.ts";
 import type { ExecutionReport, RemediationReport, TestPlan, TriageReport } from "./lib/schemas.ts";
 import { connectTestkube } from "./lib/testkube.ts";
+import { sessions } from "./lib/agent.ts";
+import { mkdir, writeFile } from "node:fs/promises";
+import { homedir } from "node:os";
 import { AgentLog, banner, colors as c, statusIcon } from "./lib/ui.ts";
 
 const git = promisify(execFile);
@@ -109,12 +112,30 @@ async function runLoop(prNumber: number) {
   await github.comment(pr.number, `## ${passed ? "✅" : "❌"} Quality gate: ${gate.headline}\n\n${gate.summary}`);
   (passed ? log.ok : log.fail).call(log, `${gate.verdict.toUpperCase()} · confidence ${gate.confidence}% · ${gate.headline}`);
 
+  const manifest = await writeManifest(pr.number);
+  log.info(`agent sessions: ${manifest}`);
+
   const total = Object.values(costs).reduce((a, b) => a + b, 0);
   const breakdown = Object.entries(costs).map(([k, v]) => `${k} $${v.toFixed(2)}`).join(" · ");
   banner(
     `Done in ${((Date.now() - started) / 1000).toFixed(0)}s`,
     `agent cost $${total.toFixed(2)} (${breakdown}) · ${pr.url}`,
   );
+}
+
+/** Writes runs/pr-<n>.json: which agent ran in which Claude Code session, and where its transcript is. */
+async function writeManifest(prNumber: number): Promise<string> {
+  const dir = join(REPO_ROOT, "runs");
+  await mkdir(dir, { recursive: true });
+  const file = join(dir, `pr-${prNumber}.json`);
+  const entries = sessions.map((s) => ({
+    ...s,
+    transcript: join(homedir(), ".claude", "projects", s.cwd.replace(/[^a-zA-Z0-9]/g, "-"), `${s.sessionId}.jsonl`),
+    resume: `cd ${s.cwd} && claude --resume ${s.sessionId}`,
+  }));
+  await writeFile(file, JSON.stringify({ pr: prNumber, finishedAt: new Date().toISOString(), sessions: entries }, null, 2) + "\n");
+  sessions.length = 0; // watch mode: the next PR gets its own manifest
+  return file;
 }
 
 /** Check out the PR head in its own worktree, for Triage to read and the Remediator to edit. */

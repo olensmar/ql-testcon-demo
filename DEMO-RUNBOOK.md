@@ -12,7 +12,7 @@
 - [ ] `./scripts/prewarm.sh` (images may have been evicted)
 - [ ] `testkube mcp serve` works: run `cd agents && npm run setup` (it is idempotent)
 - [ ] Credentials: `gh auth status`, plus `ANTHROPIC_API_KEY` exported (or a Claude Code login)
-- [ ] `./scripts/reset-demo.sh`, so a fresh PR is open but **not** yet processed. Alternatively, start `npm run watch` and run reset live on stage.
+- [ ] `./scripts/reset-demo.sh` (bug only) or `./scripts/reset-demo.sh --flaky` (bug plus a flaky browse run), so a fresh PR is open but **not** yet processed. Alternatively, start `npm run watch` and run reset live on stage. Don't run `shop-e2e-browse` between the reset and the loop, because the flake alternates by execution number.
 - [ ] Screen layout:
   - Left: terminal (large font) in `agents/`
   - Right top: the PR on GitHub (conversation tab)
@@ -27,9 +27,15 @@
 | Execute | Pods fan out in the Testkube dashboard and kubectl: Playwright shards and k6 workers, all in parallel. The app is started from source per run, with no image build. |
 | Results | Unit tests pass. API and E2E checkout **fail**: "unit tests alone would have let this through". |
 | Triage | Two Opus agents in parallel read logs and artifacts through MCP. Verdict: *product bug*, discount computed on subtotal + shipping. Show the `triage=product-bug` tag on the execution in the dashboard. |
-| Remediate | One-line fix plus a regression unit test, committed and pushed to the PR branch. |
-| Verify | The same plan runs on the new SHA; all green. |
+| Triage (flaky run) | The browse triage agent suspects a slow-catalog flake, **re-runs** the workflow to check, sees it pass on the same commit and tags it `triage=flake`. |
+| Remediate | One-line fix plus a regression unit test, committed and pushed to the PR branch. With `--flaky`, `shop-e2e-browse` also gets the label `quarantine=true` in Testkube. |
+| Verify | The same plan runs on the new SHA (quarantined workflows skipped); all green. |
 | Gate | The `quality-gate` commit status turns green and a final PR comment appears (verdict, confidence, what happened). In the Testkube dashboard, filter executions by tag `pr=<n>` to show the full trail. |
+
+## Showing the agents themselves
+
+- `runs/pr-<n>.json` lists every agent session in the run (agent, session ID, transcript path, resume command).
+- To open one, run its `resume` command (e.g. `cd .worktrees/pr-5 && claude --resume <id>`). Claude Code shows the agent's full conversation: prompt, tool calls, MCP results.
 
 ## If something goes wrong
 

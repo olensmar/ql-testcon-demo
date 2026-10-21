@@ -64,4 +64,24 @@ Every execution is tagged with `pr` and `revision` (through the workflows' `exec
 expressions), and failed executions also get a `triage` tag. In the Testkube dashboard you can
 filter on these tags to see the PR's whole history.
 
+### The controllable flake
+
+`./scripts/reset-demo.sh --flaky` (or `npm run flake -- on|off` in `agents/`) sets the
+`chaos` config of `shop-e2e-browse`, which gives the app 3s of catalog latency on alternating
+executions. The browse test has a 2s render budget, so the next run fails and the one after passes.
+Triage confirms the flake with a re-run, the workflow gets the label `quarantine=true`, the
+verification run skips it, and the Gate doesn't block on it.
+
+### Agent sessions
+
+The Agent SDK runs each agent as a local Claude Code session; nothing is registered server-side.
+Every run writes `runs/pr-<n>.json`, which lists each agent's session ID, its transcript
+(`~/.claude/projects/<cwd>/<session>.jsonl`) and a `claude --resume` command that opens the
+session interactively. The terminal also prints the session ID when each agent finishes.
+
+### Diagrams
+
+[`docs/diagrams`](docs/diagrams) has slide-ready SVG and PNG versions of: the setup, the quality
+loop, CI vs Kubernetes fan-out, and the Selector, Triage and Gate agents in detail.
+
 See [DEMO-RUNBOOK.md](DEMO-RUNBOOK.md) for the on-stage checklist.
