@@ -82,6 +82,14 @@ session interactively. The terminal also prints the session ID when each agent f
 ### Diagrams
 
 [`docs/diagrams`](docs/diagrams) has slide-ready SVG and PNG versions of: the setup, the quality
-loop, CI vs Kubernetes fan-out, and the Selector, Triage and Gate agents in detail.
+loop, CI vs Kubernetes fan-out, the Selector, Triage and Gate agents in detail, and "why not run
+the tests in the agent's sandbox?".
+
+### AI spend
+
+At the end of each run the terminal prints tokens (input, cache read, cache write, output) and
+the estimated cost per agent session and model. The same table goes into the final PR comment
+(collapsed) and into `runs/pr-<n>.json`. A typical run is 7 sessions, about 500k tokens and
+about $0.40, mostly cached prompt reads; a flaky run with three triage agents is about $1.
 
 See [DEMO-RUNBOOK.md](DEMO-RUNBOOK.md) for the on-stage checklist.
