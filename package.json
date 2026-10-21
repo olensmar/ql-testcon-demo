@@ -1,0 +1,10 @@
+{
+  "name": "kube-shop",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.18" },
+  "scripts": {
+    "start": "node app/src/server.ts",
+    "test": "node --test 'app/test/unit/*.test.ts'"
+  }
+}

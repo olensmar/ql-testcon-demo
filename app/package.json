@@ -1,0 +1,5 @@
+{
+  "name": "kube-shop-app",
+  "private": true,
+  "type": "module"
+}

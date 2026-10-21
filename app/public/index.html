@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kube Shop</title>
+  <style>
+    :root { --fg: #1d2433; --muted: #667085; --accent: #3b5bdb; --bg: #f6f7fb; --card: #fff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 15px/1.5 system-ui, sans-serif; color: var(--fg); background: var(--bg); }
+    header { padding: 16px 24px; background: var(--fg); color: #fff; display: flex; justify-content: space-between; }
+    main { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; padding: 24px; max-width: 1000px; margin: 0 auto; }
+    @media (max-width: 700px) { main { grid-template-columns: 1fr; } }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+    .card { background: var(--card); border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgb(0 0 0 / .08); }
+    .price { color: var(--muted); }
+    button { background: var(--accent); color: #fff; border: 0; border-radius: 6px; padding: 8px 14px; cursor: pointer; font: inherit; }
+    button:disabled { opacity: .5; cursor: default; }
+    input { font: inherit; padding: 7px 10px; border: 1px solid #d0d5dd; border-radius: 6px; width: 100%; }
+    ul { padding-left: 18px; }
+    .row { display: flex; justify-content: space-between; }
+    .total { font-weight: 700; border-top: 1px solid #e4e7ec; margin-top: 8px; padding-top: 8px; }
+    .error { color: #c92a2a; }
+    form { display: grid; gap: 10px; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <header><strong>Kube Shop</strong><span>Cart: <span data-testid="cart-count">0</span></span></header>
+  <main>
+    <section>
+      <h2>Products</h2>
+      <div class="grid" data-testid="product-list"></div>
+    </section>
+    <aside class="card">
+      <h2>Your cart</h2>
+      <ul data-testid="cart-items"></ul>
+      <div class="row"><span>Subtotal</span><span data-testid="cart-subtotal">$0.00</span></div>
+      <form id="checkout-form">
+        <button type="submit" data-testid="checkout-button" disabled>Checkout</button>
+      </form>
+      <div data-testid="order-summary" hidden>
+        <h3>Order confirmed</h3>
+        <div class="row"><span>Subtotal</span><span data-testid="order-subtotal"></span></div>
+        <div class="row"><span>Shipping</span><span data-testid="order-shipping"></span></div>
+        <div class="row total"><span>Total</span><span data-testid="order-total"></span></div>
+      </div>
+      <p class="error" data-testid="error" hidden></p>
+    </aside>
+  </main>
+  <script>
+    const $ = (id) => document.querySelector(`[data-testid="${id}"]`);
+    const money = (n) => `$${n.toFixed(2)}`;
+    let cartId;
+
+    async function api(method, path, body) {
+      const res = await fetch(path, {
+        method,
+        headers: { "content-type": "application/json" },
+        body: body && JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      return data;
+    }
+
+    function renderCart(cart) {
+      const count = cart.items.reduce((n, i) => n + i.quantity, 0);
+      $("cart-count").textContent = count;
+      $("cart-items").innerHTML = cart.items
+        .map((i) => `<li>${i.name} × ${i.quantity}</li>`)
+        .join("");
+      $("cart-subtotal").textContent = money(cart.items.reduce((s, i) => s + i.price * i.quantity, 0));
+      $("checkout-button").disabled = count === 0;
+    }
+
+    async function addToCart(productId) {
+      cartId ??= (await api("POST", "/api/cart")).id;
+      renderCart(await api("POST", `/api/cart/${cartId}/items`, { productId }));
+    }
+
+    async function checkout(event) {
+      event.preventDefault();
+      $("error").hidden = true;
+      try {
+        const order = await api("POST", "/api/checkout", checkoutRequest());
+        $("order-subtotal").textContent = money(order.subtotal);
+        $("order-shipping").textContent = money(order.shipping);
+        $("order-total").textContent = money(order.total);
+        $("order-summary").hidden = false;
+      } catch (err) {
+        $("error").textContent = err.message;
+        $("error").hidden = false;
+      }
+    }
+
+    function checkoutRequest() {
+      return { cartId };
+    }
+
+    async function init() {
+      const products = await api("GET", "/api/products");
+      $("product-list").innerHTML = products
+        .map((p) => `
+          <div class="card" data-testid="product-${p.id}">
+            <h3>${p.name}</h3>
+            <p class="price">${money(p.price)}</p>
+            <button data-testid="add-${p.id}" onclick="addToCart('${p.id}')">Add to cart</button>
+          </div>`)
+        .join("");
+      document.getElementById("checkout-form").addEventListener("submit", checkout);
+    }
+
+    init();
+  </script>
+</body>
+</html>
