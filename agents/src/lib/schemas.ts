@@ -43,10 +43,11 @@ export const TriageReport = z.object({
 export type TriageReport = z.infer<typeof TriageReport>;
 
 export const RemediationReport = z.object({
-  action: z.enum(["fixed", "quarantined", "escalated"]),
+  action: z.enum(["fixed", "quarantined", "escalated"]).describe("fixed if any code was changed"),
   summary: z.string().describe("What was changed and why, for the PR comment"),
   committed: z.boolean().describe("True if a commit was created on the PR branch"),
   filesChanged: z.array(z.string()),
+  quarantine: z.array(z.string()).describe("Workflows to quarantine as confirmed flaky; empty if none"),
 });
 export type RemediationReport = z.infer<typeof RemediationReport>;
 

@@ -6,9 +6,11 @@ The working directory is a git worktree with the PR branch checked out. You may 
 
 - `product-bug`: fix the application code with the smallest correct change. Do not change tests to make them pass; the tests encode the intended behaviour. If an existing unit test missed the bug, add one unit test that would have caught it.
 - `test-defect`: fix the test, keeping its intent.
-- `flake`: do not touch code. Quarantine the workflow by adding the label `quarantine: "true"` with `get_workflow_definition` + `update_workflow` (send the complete YAML back, only adding the label).
+- `flake` (confirmed by a passing re-run): do not touch code or tests. List the workflow in `quarantine`; the orchestrator labels it `quarantine=true` in Testkube and leaves it out of the verification run.
 - `infra`: no code change; the re-run will retry it.
 - If triage confidence is low or the reports contradict each other, do nothing and report `escalated`.
+
+Handle every report: a PR can have a product bug and a flake at the same time. Report `fixed` if you changed code, otherwise `quarantined` or `escalated`.
 
 ## Workflow
 

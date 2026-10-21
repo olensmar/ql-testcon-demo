@@ -1,7 +1,6 @@
 import { runAgent } from "../lib/agent.ts";
 import type { PullRequest } from "../lib/github.ts";
 import { RemediationReport, type TriageReport } from "../lib/schemas.ts";
-import { tk } from "../lib/testkube.ts";
 
 export function remediate(pr: PullRequest, triage: TriageReport[], worktree: string) {
   return runAgent({
@@ -20,7 +19,6 @@ export function remediate(pr: PullRequest, triage: TriageReport[], worktree: str
       "Bash(git log*)",
       "Bash(git add*)",
       "Bash(git commit*)",
-      ...tk("get_workflow_definition", "update_workflow"),
     ],
     schema: RemediationReport,
     cwd: worktree,

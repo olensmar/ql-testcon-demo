@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 # Opens a fresh "Add discount codes at checkout" PR (with the planted bug) for a demo run.
-# Closes any previous demo PR and recreates the branch from main + demo/discount-codes.patch.
+# Closes any previous demo PR, restores the Testkube workflows (clears quarantine labels and
+# fault injection) and recreates the branch from main + demo/discount-codes.patch.
+#
+#   ./scripts/reset-demo.sh            # bug only
+#   ./scripts/reset-demo.sh --flaky    # bug + a flaky browse E2E run (fails once, passes on re-run)
 set -euo pipefail
+
+FLAKY=false
+[[ "${1:-}" == "--flaky" ]] && FLAKY=true
 
 REPO="${DEMO_REPO:-olensmar/ql-testcon-demo}"
 BRANCH="feature/discount-codes"
@@ -12,6 +19,12 @@ for n in $(gh pr list -R "$REPO" --head "$BRANCH" --state open --json number -q 
   echo "closing previous demo PR #$n"
   gh pr close "$n" -R "$REPO" --comment "Superseded by a new demo run." >/dev/null
 done
+
+echo "restoring Testkube workflows"
+(cd "$ROOT/agents" && npm run --silent setup >/dev/null)
+if $FLAKY; then
+  (cd "$ROOT/agents" && npm run --silent flake -- on)
+fi
 
 git fetch -q origin main
 WT="$(mktemp -d)"
@@ -29,7 +42,7 @@ gh pr create -R "$REPO" --head "$BRANCH" --base main \
 Adds percentage discount codes to checkout.
 
 - `POST /api/checkout` accepts an optional `discountCode` (`SAVE10` = 10%, `WELCOME20` = 20%), case-insensitive
-- The order summary shows the discount line
+- The order summary shows the discount line, and the catalog shows a SAVE10 promo banner
 - Invalid codes are rejected with a 400
 
 Tests: unit tests for the new pricing logic (passing locally ✅), plus API and E2E coverage.

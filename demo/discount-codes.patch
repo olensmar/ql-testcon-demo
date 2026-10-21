@@ -1,8 +1,24 @@
 diff --git a/app/public/index.html b/app/public/index.html
-index c1b78e9..3413a9d 100644
+index 900c4e8..fe2b8c4 100644
 --- a/app/public/index.html
 +++ b/app/public/index.html
-@@ -36,12 +36,14 @@
+@@ -21,6 +21,7 @@
+     .row { display: flex; justify-content: space-between; }
+     .total { font-weight: 700; border-top: 1px solid #e4e7ec; margin-top: 8px; padding-top: 8px; }
+     .error { color: #c92a2a; }
++    .promo { background: #fff4e6; border: 1px dashed #f08c00; border-radius: 8px; padding: 10px 14px; margin: 0 0 16px; }
+     form { display: grid; gap: 10px; margin-top: 12px; }
+   </style>
+ </head>
+@@ -29,6 +30,7 @@
+   <main>
+     <section>
+       <h2>Products</h2>
++      <p class="promo" data-testid="promo-banner">🎉 Use code <strong>SAVE10</strong> at checkout for 10% off your order</p>
+       <div class="grid" data-testid="product-list"></div>
+     </section>
+     <aside class="card">
+@@ -36,12 +38,14 @@
        <ul data-testid="cart-items"></ul>
        <div class="row"><span>Subtotal</span><span data-testid="cart-subtotal">$0.00</span></div>
        <form id="checkout-form">
@@ -17,7 +33,7 @@ index c1b78e9..3413a9d 100644
          <div class="row total"><span>Total</span><span data-testid="order-total"></span></div>
        </div>
        <p class="error" data-testid="error" hidden></p>
-@@ -85,6 +87,8 @@
+@@ -85,6 +89,8 @@
          const order = await api("POST", "/api/checkout", checkoutRequest());
          $("order-subtotal").textContent = money(order.subtotal);
          $("order-shipping").textContent = money(order.shipping);
@@ -26,7 +42,7 @@ index c1b78e9..3413a9d 100644
          $("order-total").textContent = money(order.total);
          $("order-summary").hidden = false;
        } catch (err) {
-@@ -94,7 +98,8 @@
+@@ -94,7 +100,8 @@
      }
  
      function checkoutRequest() {
@@ -75,10 +91,10 @@ index 87902d2..44d4628 100644
 +  return round(amount * rate);
  }
 diff --git a/app/src/server.ts b/app/src/server.ts
-index 0b4233f..67e59ed 100644
+index 8a80a3c..eddb8bd 100644
 --- a/app/src/server.ts
 +++ b/app/src/server.ts
-@@ -29,7 +29,7 @@ const routes: Array<[method: string, pattern: RegExp, handler: Handler]> = [
+@@ -34,7 +34,7 @@ const routes: Array<[method: string, pattern: RegExp, handler: Handler]> = [
      /^\/api\/checkout$/,
      (_req, body) => {
        const cart = getCart(body.cartId) ?? notFound(`cart ${body.cartId} not found`);
@@ -88,10 +104,10 @@ index 0b4233f..67e59ed 100644
    ],
  ];
 diff --git a/app/test/unit/checkout.test.ts b/app/test/unit/checkout.test.ts
-index f8c440b..d22c3ee 100644
+index 827ca5e..167662f 100644
 --- a/app/test/unit/checkout.test.ts
 +++ b/app/test/unit/checkout.test.ts
-@@ -7,13 +7,30 @@ const penguin = { productId: "mini-penguin", name: "Mini Penguin", price: 6, qu
+@@ -7,13 +7,30 @@ const penguin = { productId: "mini-penguin", name: "Mini Penguin", price: 6, qua
  const gopher = { productId: "gopher", name: "Gopher Plushie", price: 12, quantity: 1 };
  
  test("orders of $50 or more ship free", () => {
@@ -125,7 +141,7 @@ index f8c440b..d22c3ee 100644
 +  assert.throws(() => calculateTotals([bear], "FREESTUFF"), /invalid discount code/);
 +});
 diff --git a/tests/api/checkout.postman_collection.json b/tests/api/checkout.postman_collection.json
-index 8d250de..a0fd544 100644
+index f953dd3..28ff88a 100644
 --- a/tests/api/checkout.postman_collection.json
 +++ b/tests/api/checkout.postman_collection.json
 @@ -1,6 +1,6 @@
@@ -222,8 +238,20 @@ index 8d250de..a0fd544 100644
      {
        "name": "Create cart over $50",
        "event": [
+diff --git a/tests/e2e/browse.spec.ts b/tests/e2e/browse.spec.ts
+index 4c40792..e5a0e47 100644
+--- a/tests/e2e/browse.spec.ts
++++ b/tests/e2e/browse.spec.ts
+@@ -19,3 +19,7 @@ test("adding products updates the cart badge", async ({ page }) => {
+ test("checkout is disabled for an empty cart", async ({ page }) => {
+   await expect(page.getByTestId("checkout-button")).toBeDisabled();
+ });
++
++test("shows the SAVE10 promo banner on the catalog", async ({ page }) => {
++  await expect(page.getByTestId("promo-banner")).toContainText("SAVE10");
++});
 diff --git a/tests/e2e/checkout.spec.ts b/tests/e2e/checkout.spec.ts
-index 1ea50c0..45368ea 100644
+index b2ade19..7c69697 100644
 --- a/tests/e2e/checkout.spec.ts
 +++ b/tests/e2e/checkout.spec.ts
 @@ -27,3 +27,21 @@ test("the order summary lists the cart subtotal", async ({ page }) => {

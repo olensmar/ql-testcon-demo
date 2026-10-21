@@ -8,6 +8,8 @@ import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseArgs, promisify } from "node:util";
+import { readFile } from "node:fs/promises";
+import { parse, stringify } from "yaml";
 import { executePlan } from "./agents/executor.ts";
 import { reportGate } from "./agents/gate.ts";
 import { remediate } from "./agents/remediator.ts";
@@ -60,7 +62,14 @@ async function runLoop(prNumber: number) {
   if (failures.length > 0) {
     // 3 · Triage ----------------------------------------------------------------------------
     banner("3 · Triage", `${failures.length} failed execution${failures.length > 1 ? "s" : ""}, analysed in parallel`);
-    const results = await Promise.all(failures.map((f) => triageFailure(pr, diff, f, worktree)));
+    const configFor = (workflow: string) => ({
+      ...plan.selected.find((s) => s.workflow === workflow)?.config,
+      revision: pr.headRefOid,
+      pr: String(pr.number),
+    });
+    const results = await Promise.all(
+      failures.map((f) => triageFailure(pr, diff, f, configFor(f.workflow), worktree)),
+    );
     triage = results.map((r) => track("triage", r));
     for (const t of triage) printTriage(t);
     await tagTriage(triage);
@@ -75,13 +84,16 @@ async function runLoop(prNumber: number) {
       log.ok(`pushed ${newSha.slice(0, 7)} to ${pr.headRefName}`);
       headSha = newSha;
     }
+    for (const workflow of remediation.quarantine) await quarantine(workflow);
     log.info(`${remediation.action}: ${remediation.summary.split("\n")[0]}`);
     await github.comment(pr.number, remediationComment(remediation, headSha));
 
     // 5 · Verify ----------------------------------------------------------------------------
-    if (remediation.action !== "escalated") {
-      banner("5 · Verify", `same plan @ ${headSha.slice(0, 7)}`);
-      verification = await withUrls(track("executor", await executePlan(plan, headSha, pr.number, "verify")));
+    const verifyPlan = { ...plan, selected: plan.selected.filter((s) => !remediation!.quarantine.includes(s.workflow)) };
+    if (remediation.action !== "escalated" && verifyPlan.selected.length > 0) {
+      const skipped = remediation.quarantine.length ? ` · skipping quarantined ${remediation.quarantine.join(", ")}` : "";
+      banner("5 · Verify", `same plan @ ${headSha.slice(0, 7)}${skipped}`);
+      verification = await withUrls(track("executor", await executePlan(verifyPlan, headSha, pr.number, "verify")));
       printExecutions(verification);
       await github.comment(pr.number, executionComment("Verification run", headSha, verification));
     }
@@ -113,6 +125,24 @@ async function prepareWorktree(pr: github.PullRequest): Promise<string> {
   if (existsSync(dir)) await git("git", ["worktree", "remove", "--force", dir], { cwd: REPO_ROOT });
   await git("git", ["worktree", "add", "-q", "-B", `demo/pr-${pr.number}`, dir, pr.headRefOid], { cwd: REPO_ROOT });
   return dir;
+}
+
+/** Labels a workflow quarantine=true in Testkube (from testkube/<name>.yaml, keeping live config defaults). */
+async function quarantine(workflow: string) {
+  const testkube = await connectTestkube();
+  try {
+    const doc = parse(await readFile(join(REPO_ROOT, "testkube", `${workflow}.yaml`), "utf8"));
+    const { workflow: live } = await testkube.call("get_workflow_definition", { workflowName: workflow });
+    for (const [key, param] of Object.entries<any>(doc.spec.config ?? {})) {
+      const liveDefault = live.spec?.config?.[key]?.default;
+      if (liveDefault !== undefined) param.default = liveDefault?.value ?? liveDefault;
+    }
+    doc.metadata.labels.quarantine = "true";
+    await testkube.call("update_workflow", { workflowName: workflow, yaml: stringify(doc) });
+    new AgentLog("remediator").info(`🧪 quarantined ${workflow} (label quarantine=true)`);
+  } finally {
+    await testkube.close();
+  }
 }
 
 /** Records each triage verdict on its execution in Testkube (tags are replaced, so merge). */
@@ -229,7 +259,10 @@ ${t.evidence.map((e) => `- ${e}`).join("\n")}
 function remediationComment(r: RemediationReport, sha: string): string {
   const icon = { fixed: "🛠️", quarantined: "🧪", escalated: "🙋" }[r.action];
   const commit = r.committed ? `\n\nCommit: ${sha}` : "";
-  return `### ${icon} Remediation: ${r.action}\n\n${r.summary}${commit}${AGENT_FOOTER}`;
+  const quarantined = r.quarantine.length
+    ? `\n\n🧪 Quarantined as flaky in Testkube: ${r.quarantine.map((w) => `\`${w}\``).join(", ")}`
+    : "";
+  return `### ${icon} Remediation: ${r.action}\n\n${r.summary}${commit}${quarantined}${AGENT_FOOTER}`;
 }
 
 // ---- entry point ----------------------------------------------------------------------------

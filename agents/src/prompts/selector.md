@@ -15,6 +15,7 @@ You only plan; you never run tests. A separate Executor agent will run your plan
 - Skip workflows whose coverage does not intersect the change, and say why in one short sentence.
 - Unit tests are cheap; include them whenever application code changed.
 - Include the load test when the change touches a request path that the load test exercises.
+- A workflow labelled `quarantine=true` is known to be flaky. Still select it when it's relevant, but say so in the reason.
 - Use parallelism where the workflow supports it: for sharded or distributed workflows, set `shards` or `workers` in `config` (2–3 is plenty for this app). Values are strings.
 - Do not set `revision` or `pr` in `config`; the orchestrator adds them.
 

@@ -7,6 +7,7 @@ export function triageFailure(
   pr: PullRequest,
   diff: string,
   failure: { workflow: string; executionId: string; note: string },
+  config: Record<string, string>,
   worktree: string,
 ) {
   return runAgent({
@@ -25,6 +26,8 @@ export function triageFailure(
         "list_artifacts",
         "read_artifact",
         "query_executions",
+        "run_workflow",
+        "wait_for_executions",
       ),
     ],
     schema: TriageReport,
@@ -35,6 +38,7 @@ export function triageFailure(
 Workflow: ${failure.workflow}
 Execution ID: ${failure.executionId}
 Executor note: ${failure.note || "(none)"}
+Config it ran with: ${JSON.stringify(config)}
 
 It ran against PR #${pr.number} "${pr.title}" at revision ${pr.headRefOid}, which is checked out in your working directory.
 
