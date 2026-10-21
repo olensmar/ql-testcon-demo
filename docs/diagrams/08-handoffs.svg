@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 880" role="img" aria-label="How the agents hand off: the orchestrator code calls each agent in turn and passes its schema-validated JSON result to the next one; between agents, plain code fetches the PR, filters failures, tags Testkube, pushes the fix, applies quarantine labels and reports to GitHub." font-family="Nunito, 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#818CF8"/>
+    </marker>
+  </defs>
+  <g font-size="17" font-weight="700" fill="#FFAB40">
+    <text x="40" y="70">HAND-OFF</text>
+    <text x="530" y="70">CONTRACT · JSON, schema-validated</text>
+    <text x="1090" y="70">ORCHESTRATOR CODE · no LLM</text>
+  </g>
+  <!-- row 0: PR opened -> Selector -->
+  <rect x="40" y="116" width="170" height="50" rx="25" fill="#221848" stroke="#8B80D9" stroke-width="2.5"/><text x="125.0" y="148" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">PR opened</text>
+  <line x1="214" y1="141" x2="272" y2="141" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="276" y="116" width="230" height="50" rx="25" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/><text x="391.0" y="148" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Selector</text>
+  <rect x="530" y="95" width="540" height="92" rx="12" fill="#221848" stroke="#4A3F85" stroke-width="2"/>
+  <text x="550" y="127" font-size="18" font-weight="700" fill="#FFAB40" font-family="'SF Mono', Menlo, monospace">prompt (text)</text>
+  <text x="550" y="153" font-size="15.5" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">PR title, description, changed files</text>
+  <text x="550" y="175" font-size="15.5" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">full diff</text>
+  <rect x="1090" y="95" width="470" height="92" rx="12" fill="#1C1440" stroke="#6E64B0" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="1110" y="133" font-size="17" fill="#E4E1F5">⚙ gh pr view · gh pr diff</text>
+  <text x="1110" y="161" font-size="17" fill="#E4E1F5">check out the PR in a git worktree</text>
+  <!-- row 1: Selector -> Executor -->
+  <rect x="40" y="216" width="170" height="50" rx="25" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/><text x="125.0" y="248" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Selector</text>
+  <line x1="214" y1="241" x2="272" y2="241" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="276" y="216" width="230" height="50" rx="25" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/><text x="391.0" y="248" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Executor</text>
+  <rect x="530" y="195" width="540" height="92" rx="12" fill="#221848" stroke="#4A3F85" stroke-width="2"/>
+  <text x="550" y="227" font-size="18" font-weight="700" fill="#FFAB40" font-family="'SF Mono', Menlo, monospace">TestPlan</text>
+  <text x="550" y="253" font-size="15.5" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">selected[ workflow, reason, config ]</text>
+  <text x="550" y="275" font-size="15.5" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">skipped[ workflow, reason ] · summary</text>
+  <rect x="1090" y="195" width="470" height="92" rx="12" fill="#1C1440" stroke="#6E64B0" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="1110" y="233" font-size="17" fill="#E4E1F5">⚙ add revision = PR head SHA and</text>
+  <text x="1110" y="261" font-size="17" fill="#E4E1F5">pr = number to every workflow config</text>
+  <!-- row 2: Executor -> Triage ×N -->
+  <rect x="40" y="316" width="170" height="50" rx="25" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/><text x="125.0" y="348" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Executor</text>
+  <line x1="214" y1="341" x2="272" y2="341" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="276" y="316" width="230" height="50" rx="25" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/><text x="391.0" y="348" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Triage ×N</text>
+  <rect x="530" y="295" width="540" height="92" rx="12" fill="#221848" stroke="#4A3F85" stroke-width="2"/>
+  <text x="550" y="327" font-size="18" font-weight="700" fill="#FFAB40" font-family="'SF Mono', Menlo, monospace">ExecutionReport</text>
+  <text x="550" y="353" font-size="15.5" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">executions[ workflow, executionId,</text>
+  <text x="550" y="375" font-size="15.5" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">  status, duration, note ]</text>
+  <rect x="1090" y="295" width="470" height="92" rx="12" fill="#1C1440" stroke="#6E64B0" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="1110" y="333" font-size="17" fill="#E4E1F5">⚙ keep the failures; none → go to the Gate</text>
+  <text x="1110" y="361" font-size="17" fill="#E4E1F5">start one Triage per failure, in parallel</text>
+  <!-- row 3: Triage ×N -> Remediator -->
+  <rect x="40" y="416" width="170" height="50" rx="25" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/><text x="125.0" y="448" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Triage ×N</text>
+  <line x1="214" y1="441" x2="272" y2="441" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="276" y="416" width="230" height="50" rx="25" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/><text x="391.0" y="448" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Remediator</text>
+  <rect x="530" y="395" width="540" height="92" rx="12" fill="#221848" stroke="#4A3F85" stroke-width="2"/>
+  <text x="550" y="427" font-size="18" font-weight="700" fill="#FFAB40" font-family="'SF Mono', Menlo, monospace">TriageReport[ ]</text>
+  <text x="550" y="453" font-size="15.5" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">classification · confidence · rootCause</text>
+  <text x="550" y="475" font-size="15.5" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">evidence · suspectFiles · rerunExecutionId</text>
+  <rect x="1090" y="395" width="470" height="92" rx="12" fill="#1C1440" stroke="#6E64B0" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="1110" y="433" font-size="17" fill="#E4E1F5">⚙ tag each execution triage=&lt;class&gt; in Testkube</text>
+  <text x="1110" y="461" font-size="17" fill="#E4E1F5">post the triage comment on the PR</text>
+  <!-- row 4: Remediator -> Executor · verify -->
+  <rect x="40" y="516" width="170" height="50" rx="25" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/><text x="125.0" y="548" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Remediator</text>
+  <line x1="214" y1="541" x2="272" y2="541" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="276" y="516" width="230" height="50" rx="25" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/><text x="391.0" y="548" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Executor · verify</text>
+  <rect x="530" y="495" width="540" height="92" rx="12" fill="#221848" stroke="#4A3F85" stroke-width="2"/>
+  <text x="550" y="527" font-size="18" font-weight="700" fill="#FFAB40" font-family="'SF Mono', Menlo, monospace">RemediationReport</text>
+  <text x="550" y="553" font-size="15.5" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">action · committed · filesChanged</text>
+  <text x="550" y="575" font-size="15.5" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">quarantine[ ] · summary</text>
+  <rect x="1090" y="495" width="470" height="92" rx="12" fill="#1C1440" stroke="#6E64B0" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="1110" y="533" font-size="17" fill="#E4E1F5">⚙ git push the fix · label quarantine=true</text>
+  <text x="1110" y="561" font-size="17" fill="#E4E1F5">same plan, minus quarantined, at the new SHA</text>
+  <!-- row 5: Executor · verify -> Gate -->
+  <rect x="40" y="616" width="170" height="50" rx="25" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/><text x="125.0" y="648" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Executor · verify</text>
+  <line x1="214" y1="641" x2="272" y2="641" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="276" y="616" width="230" height="50" rx="25" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/><text x="391.0" y="648" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Gate</text>
+  <rect x="530" y="595" width="540" height="92" rx="12" fill="#221848" stroke="#4A3F85" stroke-width="2"/>
+  <text x="550" y="627" font-size="18" font-weight="700" fill="#FFAB40" font-family="'SF Mono', Menlo, monospace">ExecutionReport + loop summary</text>
+  <text x="550" y="653" font-size="15.5" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">plan · initial run · triage reports</text>
+  <text x="550" y="675" font-size="15.5" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">remediation · verification run</text>
+  <rect x="1090" y="595" width="470" height="92" rx="12" fill="#1C1440" stroke="#6E64B0" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="1110" y="633" font-size="17" fill="#E4E1F5">⚙ bundle everything for the Gate; it re-checks</text>
+  <text x="1110" y="661" font-size="17" fill="#E4E1F5">Testkube itself (executions tagged pr=N)</text>
+  <!-- row 6: Gate -> GitHub -->
+  <rect x="40" y="716" width="170" height="50" rx="25" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/><text x="125.0" y="748" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Gate</text>
+  <line x1="214" y1="741" x2="272" y2="741" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="276" y="716" width="230" height="50" rx="25" fill="#221848" stroke="#8B80D9" stroke-width="2.5"/><text x="391.0" y="748" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">GitHub</text>
+  <rect x="530" y="695" width="540" height="92" rx="12" fill="#221848" stroke="#4A3F85" stroke-width="2"/>
+  <text x="550" y="727" font-size="18" font-weight="700" fill="#FFAB40" font-family="'SF Mono', Menlo, monospace">GateReport</text>
+  <text x="550" y="753" font-size="15.5" fill="#C4BFE6" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">verdict · confidence · headline · summary</text>
+  <rect x="1090" y="695" width="470" height="92" rx="12" fill="#1C1440" stroke="#6E64B0" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="1110" y="733" font-size="17" fill="#E4E1F5">⚙ quality-gate commit status · final PR comment</text>
+  <text x="1110" y="761" font-size="17" fill="#E4E1F5">AI spend report · runs/pr-N.json</text>
+  <rect x="40" y="812" width="1520" height="48" rx="10" fill="#1C1440"/>
+  <text x="800" y="843" text-anchor="middle" font-size="18" fill="#E4E1F5">loop.ts calls each agent as a function: one query() with its own prompt, model, tool allow-list and output schema. Agents never call each other.</text>
+</svg>
