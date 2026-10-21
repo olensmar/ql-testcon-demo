@@ -5,7 +5,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("renders the product catalog within 2 seconds", async ({ page }) => {
-  await expect(page.getByTestId("product-list").locator(".card")).toHaveCount(4, { timeout: 2_000 });
+  await expect(page.getByTestId("product-list").locator(".card")).toHaveCount(5, { timeout: 2_000 });
   await expect(page.getByTestId("product-gopher")).toContainText("$12.00");
 });
 

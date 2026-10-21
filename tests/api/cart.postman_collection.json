@@ -20,7 +20,7 @@
             "type": "text/javascript",
             "exec": [
               "pm.test(\"returns 200\", () => pm.response.to.have.status(200));",
-              "pm.test(\"lists 4 products\", () => pm.expect(pm.response.json()).to.have.length(4));"
+              "pm.test(\"lists 5 products\", () => pm.expect(pm.response.json()).to.have.length(5));"
             ]
           }
         }

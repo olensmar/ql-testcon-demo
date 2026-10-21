@@ -1,6 +1,6 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { basename, extname, join } from "node:path";
 import { products } from "./catalog.ts";
 import { addItem, createCart, getCart, HttpError } from "./cart.ts";
 import { calculateTotals } from "./checkout.ts";
@@ -11,6 +11,12 @@ const PUBLIC_DIR = join(import.meta.dirname, "..", "public");
 const CATALOG_LATENCY_MS = Number(process.env.CATALOG_LATENCY_MS ?? 0);
 
 type Handler = (req: IncomingMessage, body: any, params: string[]) => unknown;
+
+const STATIC_TYPES: Record<string, string> = {
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+};
 
 const routes: Array<[method: string, pattern: RegExp, handler: Handler]> = [
   ["GET", /^\/healthz$/, () => ({ status: "ok" })],
@@ -72,6 +78,14 @@ const server = createServer(async (req, res) => {
     if (req.method === "GET" && (url.pathname === "/" || url.pathname === "/index.html")) {
       res.writeHead(200, { "content-type": "text/html" });
       return res.end(await readFile(join(PUBLIC_DIR, "index.html")));
+    }
+    const type = STATIC_TYPES[extname(url.pathname)];
+    if (req.method === "GET" && type) {
+      const file = await readFile(join(PUBLIC_DIR, basename(url.pathname))).catch(() => undefined);
+      if (file) {
+        res.writeHead(200, { "content-type": type });
+        return res.end(file);
+      }
     }
     send(res, 404, { error: "not found" });
   } catch (err) {
