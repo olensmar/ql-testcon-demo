@@ -2,10 +2,13 @@
 
 ## Running a rehearsal
 
-From the repo root (`~/Dev/ql-testcon-demo`). Needs: minikube running with the Testkube runner agent
-connected, `agents/.env` with the Testkube MCP URL and API token, `gh` logged in, and `npm ci` done
-in `agents/`.
+From the repo root (`~/Dev/ql-testcon-demo`).
 
+0. Get to a known-good state: `./scripts/pre-demo.sh` (about 1 minute). It checks the prerequisites
+   (Node, `gh`, the API token in `agents/.env`, minikube and the runner agent), pre-pulls the test
+   images, closes leftover demo PRs and worktrees, restores the Testkube workflows and runs all six
+   on `main`. It stops with a ✗ and a hint if anything isn't right. Add `--skip-pull` to skip the
+   image pull.
 1. Open a fresh demo PR. This also closes the previous demo PR and restores the Testkube workflows
    (removes quarantine labels, turns fault injection off):
 
@@ -38,8 +41,7 @@ warm and the live run is faster and cheaper.
 
 ## 15 minutes before
 
-- [ ] `./scripts/prewarm.sh` (images may have been evicted)
-- [ ] The hosted Testkube MCP endpoint is reachable with the token in `agents/.env`: run `cd agents && npm run setup` (it is idempotent)
+- [ ] `./scripts/pre-demo.sh`: all ✓ and a green baseline on `main`
 - [ ] Credentials: `gh auth status`, plus `ANTHROPIC_API_KEY` exported (or a Claude Code login)
 - [ ] `./scripts/reset-demo.sh` (bug only), `--flaky` (bug plus a flaky browse run) or `--two-bugs` (a second bug that only shows after the first fix, so the loop takes two fix rounds, about 5 minutes), so a fresh PR is open but **not** yet processed. Alternatively, start `npm run watch` and run reset live on stage. Don't run `shop-e2e-browse` between the reset and the loop, because the flake alternates by execution number.
 - [ ] Screen layout:

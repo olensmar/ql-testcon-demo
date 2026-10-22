@@ -38,9 +38,15 @@ try {
     );
     console.log(`\nbaseline runs started: ${runs.map((r) => r.name).join(", ")}`);
     await tk.call("wait_for_executions", { executionIds: runs.map((r) => r.id).join(","), timeoutMinutes: "15" });
+    let failed = 0;
     for (const run of runs) {
       const info = await tk.call("get_execution_info", { executionId: run.id });
       console.log(`${info.result.status.padEnd(8)} ${info.name} (${info.result.duration})`);
+      if (info.result.status !== "passed") failed++;
+    }
+    if (failed > 0) {
+      console.error(`\n${failed} baseline run(s) did not pass on main`);
+      process.exitCode = 1;
     }
   }
 } finally {

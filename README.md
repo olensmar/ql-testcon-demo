@@ -54,6 +54,7 @@ and fill in the token.
 
 ```bash
 ./scripts/setup.sh            # npm ci, pre-pull images, apply workflows via MCP, green baseline on main
+./scripts/pre-demo.sh         # before each rehearsal: checks, cleanup, green baseline on main
 ./scripts/reset-demo.sh       # open a fresh "Add discount codes" PR
 cd agents && npm run loop -- --pr <number>
 # or: npm run watch            # waits for new PRs and runs the loop for each
