@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 784" role="img" aria-label="Takeaways 5 to 7: guardrails in code, not in prompts; a shared record makes it trustworthy; cheap next to the alternative. Closing: AI doesn't replace QA, it raises the bar for it, from running and triaging tests to curating them, labelling them, setting the gates and reviewing what the agents decided." font-family="Nunito, 'Helvetica Neue', Arial, sans-serif">
+  <rect x="30" y="30" width="500" height="454" rx="18" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <circle cx="82" cy="86" r="27" fill="#FFAB40"/>
+  <text x="82" y="96" text-anchor="middle" font-size="28" font-weight="800" fill="#160F31">5</text>
+  <text x="126" y="96" font-size="30" fill="#FFFFFF" font-weight="700" xml:space="preserve">Guardrails in code, not in</text>
+  <text x="126" y="134" font-size="30" fill="#FFFFFF" font-weight="700" xml:space="preserve">prompts</text>
+  <text x="66" y="190" font-size="15" font-weight="700" fill="#FFAB40" letter-spacing="1">IN THE DEMO</text>
+  <text x="66" y="224" font-size="23" fill="#E4E1F5" xml:space="preserve">Plain-code orchestration. Each agent</text>
+  <text x="66" y="258" font-size="23" fill="#E4E1F5" xml:space="preserve">sees only its own tools (the</text>
+  <text x="66" y="292" font-size="23" fill="#E4E1F5" xml:space="preserve">Remediator: <tspan fill="#FFAB40" font-weight="700">none</tspan> from Testkube). Only</text>
+  <text x="66" y="326" font-size="23" fill="#E4E1F5" xml:space="preserve">code pushes, labels and posts.</text>
+  <text x="66" y="376" font-size="15" font-weight="700" fill="#FFDB5B" letter-spacing="1">FOR QA</text>
+  <text x="66" y="410" font-size="23" fill="#FFDB5B" font-weight="600" xml:space="preserve">Treat agents like test infrastructure:</text>
+  <text x="66" y="444" font-size="23" fill="#FFDB5B" font-weight="600" xml:space="preserve">scoped, predictable, auditable.</text>
+  <rect x="550" y="30" width="500" height="454" rx="18" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <circle cx="602" cy="86" r="27" fill="#FFAB40"/>
+  <text x="602" y="96" text-anchor="middle" font-size="28" font-weight="800" fill="#160F31">6</text>
+  <text x="646" y="96" font-size="30" fill="#FFFFFF" font-weight="700" xml:space="preserve">A shared record makes it</text>
+  <text x="646" y="134" font-size="30" fill="#FFFFFF" font-weight="700" xml:space="preserve">trustworthy</text>
+  <text x="586" y="190" font-size="15" font-weight="700" fill="#FFAB40" letter-spacing="1">IN THE DEMO</text>
+  <text x="586" y="224" font-size="23" fill="#E4E1F5" xml:space="preserve">Every run is in Testkube, tagged with</text>
+  <text x="586" y="258" font-size="23" fill="#E4E1F5" xml:space="preserve">PR, commit and triage verdict. The Gate</text>
+  <text x="586" y="292" font-size="23" fill="#E4E1F5" xml:space="preserve"><tspan fill="#FFAB40" font-weight="700">re-checks the record</tspan>, not the agents.</text>
+  <text x="586" y="342" font-size="15" font-weight="700" fill="#FFDB5B" letter-spacing="1">FOR QA</text>
+  <text x="586" y="376" font-size="23" fill="#FFDB5B" font-weight="600" xml:space="preserve">If it isn't recorded, AI can't reason</text>
+  <text x="586" y="410" font-size="23" fill="#FFDB5B" font-weight="600" xml:space="preserve">about it and you can't trust it.</text>
+  <rect x="1070" y="30" width="500" height="454" rx="18" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <circle cx="1122" cy="86" r="27" fill="#FFAB40"/>
+  <text x="1122" y="96" text-anchor="middle" font-size="28" font-weight="800" fill="#160F31">7</text>
+  <text x="1166" y="96" font-size="30" fill="#FFFFFF" font-weight="700" xml:space="preserve">Cheap next to the</text>
+  <text x="1166" y="134" font-size="30" fill="#FFFFFF" font-weight="700" xml:space="preserve">alternative</text>
+  <text x="1106" y="190" font-size="15" font-weight="700" fill="#FFAB40" letter-spacing="1">IN THE DEMO</text>
+  <text x="1106" y="224" font-size="23" fill="#E4E1F5" xml:space="preserve"><tspan fill="#FFAB40" font-weight="700">3–5 minutes</tspan> and <tspan fill="#FFAB40" font-weight="700">≈$0.40–$1</tspan> of AI spend</text>
+  <text x="1106" y="258" font-size="23" fill="#E4E1F5" xml:space="preserve">per PR loop. The agent that runs the</text>
+  <text x="1106" y="292" font-size="23" fill="#E4E1F5" xml:space="preserve">tests costs <tspan fill="#FFAB40" font-weight="700">under a cent</tspan>.</text>
+  <text x="1106" y="342" font-size="15" font-weight="700" fill="#FFDB5B" letter-spacing="1">FOR QA</text>
+  <text x="1106" y="376" font-size="23" fill="#FFDB5B" font-weight="600" xml:space="preserve">Compare that with an engineer</text>
+  <text x="1106" y="410" font-size="23" fill="#FFDB5B" font-weight="600" xml:space="preserve">re-running and triaging a red pipeline.</text>
+  <rect x="30" y="524" width="1540" height="230" rx="18" fill="#2B1F63" stroke="#FFAB40" stroke-width="2.5"/>
+  <text x="90" y="634" font-size="120" font-weight="800" fill="#FFAB40">“</text>
+  <text x="800" y="616" text-anchor="middle" font-size="40" font-weight="800" fill="#FFFFFF">AI doesn't replace QA, it raises the bar for it.</text>
+  <text x="800" y="674" text-anchor="middle" font-size="27" fill="#E4E1F5">From running and triaging tests to curating them, labelling them,</text>
+  <text x="800" y="714" text-anchor="middle" font-size="27" fill="#E4E1F5">setting the gates and reviewing what the agents decided.</text>
+</svg>

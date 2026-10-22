@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 882" role="img" aria-label="Takeaways 1 to 4: run tests where they scale; AI test selection needs good test metadata; triage is the biggest win if it brings proof; agents fix, the tests stay in charge." font-family="Nunito, 'Helvetica Neue', Arial, sans-serif">
+  <rect x="30" y="30" width="750" height="393" rx="18" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <circle cx="82" cy="86" r="27" fill="#FFAB40"/>
+  <text x="82" y="96" text-anchor="middle" font-size="28" font-weight="800" fill="#160F31">1</text>
+  <text x="126" y="96" font-size="32" fill="#FFFFFF" font-weight="700" xml:space="preserve">Run tests where they scale</text>
+  <text x="66" y="154" font-size="15" font-weight="700" fill="#FFAB40" letter-spacing="1">IN THE DEMO</text>
+  <text x="66" y="188" font-size="24" fill="#E4E1F5" xml:space="preserve">Four workflows: <tspan fill="#FFAB40" font-weight="700">≈33 s</tspan> in parallel pods instead of <tspan fill="#FFAB40" font-weight="700">≈75 s</tspan> back</text>
+  <text x="66" y="223" font-size="24" fill="#E4E1F5" xml:space="preserve">to back, each against a fresh copy of the app built from the</text>
+  <text x="66" y="258" font-size="24" fill="#E4E1F5" xml:space="preserve">PR.</text>
+  <text x="66" y="309" font-size="15" font-weight="700" fill="#FFDB5B" letter-spacing="1">FOR QA</text>
+  <text x="66" y="343" font-size="24" fill="#FFDB5B" font-weight="600" xml:space="preserve">Parallel runs and a clean environment per run are</text>
+  <text x="66" y="378" font-size="24" fill="#FFDB5B" font-weight="600" xml:space="preserve">infrastructure, not a CI add-on.</text>
+  <rect x="820" y="30" width="750" height="393" rx="18" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <circle cx="872" cy="86" r="27" fill="#FFAB40"/>
+  <text x="872" y="96" text-anchor="middle" font-size="28" font-weight="800" fill="#160F31">2</text>
+  <text x="916" y="96" font-size="32" fill="#FFFFFF" font-weight="700" xml:space="preserve">AI test selection needs good test</text>
+  <text x="916" y="136" font-size="32" fill="#FFFFFF" font-weight="700" xml:space="preserve">metadata</text>
+  <text x="856" y="194" font-size="15" font-weight="700" fill="#FFAB40" letter-spacing="1">IN THE DEMO</text>
+  <text x="856" y="228" font-size="24" fill="#E4E1F5" xml:space="preserve">The Selector picked <tspan fill="#FFAB40" font-weight="700">5 of 6</tspan> workflows and explained every</text>
+  <text x="856" y="263" font-size="24" fill="#E4E1F5" xml:space="preserve">skip, using labels, coverage descriptions and health.</text>
+  <text x="856" y="314" font-size="15" font-weight="700" fill="#FFDB5B" letter-spacing="1">FOR QA</text>
+  <text x="856" y="348" font-size="24" fill="#FFDB5B" font-weight="600" xml:space="preserve">Labelling and describing your tests is what makes AI</text>
+  <text x="856" y="383" font-size="24" fill="#FFDB5B" font-weight="600" xml:space="preserve">selection possible.</text>
+  <rect x="30" y="459" width="750" height="393" rx="18" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <circle cx="82" cy="515" r="27" fill="#FFAB40"/>
+  <text x="82" y="525" text-anchor="middle" font-size="28" font-weight="800" fill="#160F31">3</text>
+  <text x="126" y="525" font-size="32" fill="#FFFFFF" font-weight="700" xml:space="preserve">Triage is the biggest win, if it brings</text>
+  <text x="126" y="565" font-size="32" fill="#FFFFFF" font-weight="700" xml:space="preserve">proof</text>
+  <text x="66" y="623" font-size="15" font-weight="700" fill="#FFAB40" letter-spacing="1">IN THE DEMO</text>
+  <text x="66" y="657" font-size="24" fill="#E4E1F5" xml:space="preserve">Root cause to file and line in <tspan fill="#FFAB40" font-weight="700">≈15 s</tspan> at <tspan fill="#FFAB40" font-weight="700">93–97%</tspan> confidence.</text>
+  <text x="66" y="692" font-size="24" fill="#E4E1F5" xml:space="preserve">The flake was <tspan fill="#FFAB40" font-weight="700">proven</tspan> by a re-run, not guessed.</text>
+  <text x="66" y="743" font-size="15" font-weight="700" fill="#FFDB5B" letter-spacing="1">FOR QA</text>
+  <text x="66" y="777" font-size="24" fill="#FFDB5B" font-weight="600" xml:space="preserve">Expect evidence (logs, history, a re-run), not a confident</text>
+  <text x="66" y="812" font-size="24" fill="#FFDB5B" font-weight="600" xml:space="preserve">guess.</text>
+  <rect x="820" y="459" width="750" height="393" rx="18" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <circle cx="872" cy="515" r="27" fill="#FFAB40"/>
+  <text x="872" y="525" text-anchor="middle" font-size="28" font-weight="800" fill="#160F31">4</text>
+  <text x="916" y="525" font-size="32" fill="#FFFFFF" font-weight="700" xml:space="preserve">Agents fix, the tests stay in charge</text>
+  <text x="856" y="583" font-size="15" font-weight="700" fill="#FFAB40" letter-spacing="1">IN THE DEMO</text>
+  <text x="856" y="617" font-size="24" fill="#E4E1F5" xml:space="preserve">Fix → re-run the same plan → at most <tspan fill="#FFAB40" font-weight="700">2 fix rounds</tspan> → a human.</text>
+  <text x="856" y="652" font-size="24" fill="#E4E1F5" xml:space="preserve">Round 2 caught a second bug; out of rounds, the gate fails.</text>
+  <text x="856" y="703" font-size="15" font-weight="700" fill="#FFDB5B" letter-spacing="1">FOR QA</text>
+  <text x="856" y="737" font-size="24" fill="#FFDB5B" font-weight="600" xml:space="preserve">Agents may not change tests to make them pass.</text>
+</svg>
