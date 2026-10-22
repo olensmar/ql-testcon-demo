@@ -30,6 +30,20 @@ function endpoint(): { url: string; headers: Record<string, string> } {
   return { url: TK_MCP_URL!, headers: { Authorization: `Bearer ${TK_ACCESS_TOKEN}` } };
 }
 
+let toolNamesOnce: Promise<string[]> | undefined;
+
+/** All Testkube MCP tool names (fetched once per process), so agents can hide the ones they don't use. */
+export function testkubeToolNames(): Promise<string[]> {
+  toolNamesOnce ??= connectTestkube().then(async (tk) => {
+    try {
+      return await tk.toolNames();
+    } finally {
+      await tk.close();
+    }
+  });
+  return toolNamesOnce;
+}
+
 export function testkubeMcpServer(): Record<string, McpServerConfig> {
   const { url, headers } = endpoint();
   return { [TESTKUBE]: { type: "http", url, headers } };
@@ -63,6 +77,11 @@ export class TestkubeClient {
     } catch {
       return text as T;
     }
+  }
+
+  /** Names of every tool the Testkube MCP server offers. */
+  async toolNames(): Promise<string[]> {
+    return (await this.client.listTools()).tools.map((t) => t.name);
   }
 
   close() {

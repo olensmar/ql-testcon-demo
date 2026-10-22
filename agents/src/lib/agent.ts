@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { query, type EffortLevel, type ModelUsage } from "@anthropic-ai/claude-agent-sdk";
 import { z } from "zod";
-import { TESTKUBE, testkubeMcpServer } from "./testkube.ts";
+import { TESTKUBE, testkubeMcpServer, testkubeToolNames, tk } from "./testkube.ts";
 import { AgentLog } from "./ui.ts";
 
 export interface AgentSpec<T> {
@@ -40,6 +40,8 @@ export const sessions: Array<{
   durationMs: number;
   costUsd: number;
   modelUsage: Record<string, ModelUsage>;
+  /** Testkube MCP tools this session could see (after hiding). */
+  testkubeTools: string[];
 }> = [];
 
 const PROMPT_DIR = join(import.meta.dirname, "..", "prompts");
@@ -71,6 +73,11 @@ export async function runAgent<T>(spec: AgentSpec<T>): Promise<AgentResult<T>> {
 async function runAgentOnce<T>(spec: AgentSpec<T>, log: AgentLog): Promise<AgentResult<T>> {
   const systemPrompt = await readFile(join(PROMPT_DIR, `${spec.name}.md`), "utf8");
 
+  // Hide every Testkube tool this agent isn't allowed to use, so its definition never reaches the
+  // model (allowedTools only auto-approves; it doesn't remove anything from context).
+  const hiddenTools = tk(...(await testkubeToolNames())).filter((t) => !spec.allowedTools.includes(t));
+
+  let visibleTestkubeTools: string[] = [];
   const abortController = new AbortController();
   const conversation = query({
     prompt: spec.prompt,
@@ -81,6 +88,7 @@ async function runAgentOnce<T>(spec: AgentSpec<T>, log: AgentLog): Promise<Agent
       systemPrompt,
       tools: spec.tools,
       allowedTools: spec.allowedTools,
+      disallowedTools: hiddenTools,
       permissionMode: "dontAsk",
       // Only the Testkube server configured here: no project/user MCP config and no
       // claude.ai account connectors, so every agent uses the same, allow-listed tools.
@@ -102,6 +110,11 @@ async function runAgentOnce<T>(spec: AgentSpec<T>, log: AgentLog): Promise<Agent
         abortController.abort();
         throw new McpUnavailable(`Testkube MCP server ${testkube?.status ?? "missing"}`);
       }
+      visibleTestkubeTools = message.tools
+        .filter((t) => t.startsWith(`mcp__${TESTKUBE}__`))
+        .map((t) => t.slice(`mcp__${TESTKUBE}__`.length));
+      const unexpected = message.tools.filter((t) => t.startsWith(`mcp__${TESTKUBE}__`) && !spec.allowedTools.includes(t));
+      if (unexpected.length > 0) log.toolError(`Testkube tools not hidden: ${unexpected.join(", ")}`);
     } else if (message.type === "assistant") {
       for (const block of message.message.content) {
         if (block.type === "text") log.think(block.text);
@@ -131,6 +144,7 @@ async function runAgentOnce<T>(spec: AgentSpec<T>, log: AgentLog): Promise<Agent
         durationMs: message.duration_ms,
         costUsd: message.total_cost_usd,
         modelUsage: message.modelUsage,
+        testkubeTools: visibleTestkubeTools,
       });
       log.info(`done in ${(message.duration_ms / 1000).toFixed(1)}s · ${message.num_turns} turns · session ${message.session_id}`);
       return {
