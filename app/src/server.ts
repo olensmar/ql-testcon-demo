@@ -40,7 +40,7 @@ const routes: Array<[method: string, pattern: RegExp, handler: Handler]> = [
     /^\/api\/checkout$/,
     (_req, body) => {
       const cart = getCart(body.cartId) ?? notFound(`cart ${body.cartId} not found`);
-      return { cartId: cart.id, items: cart.items, ...calculateTotals(cart.items) };
+      return { cartId: cart.id, items: cart.items, ...calculateTotals(cart.items, body.discountCode) };
     },
   ],
 ];
