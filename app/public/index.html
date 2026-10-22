@@ -23,6 +23,7 @@
     .row { display: flex; justify-content: space-between; }
     .total { font-weight: 700; border-top: 1px solid #e4e7ec; margin-top: 8px; padding-top: 8px; }
     .error { color: #c92a2a; }
+    .promo { background: #fff4e6; border: 1px dashed #f08c00; border-radius: 8px; padding: 10px 14px; margin: 0 0 16px; }
     form { display: grid; gap: 10px; margin-top: 12px; }
   </style>
 </head>
@@ -31,6 +32,7 @@
   <main>
     <section>
       <h2>Products</h2>
+      <p class="promo" data-testid="promo-banner">🎉 Use code <strong>SAVE10</strong> at checkout for 10% off your order</p>
       <div class="grid" data-testid="product-list"></div>
     </section>
     <aside class="card">
@@ -38,12 +40,14 @@
       <ul data-testid="cart-items"></ul>
       <div class="row"><span>Subtotal</span><span data-testid="cart-subtotal">$0.00</span></div>
       <form id="checkout-form">
+        <input data-testid="discount-input" placeholder="Discount code (optional)" autocomplete="off">
         <button type="submit" data-testid="checkout-button" disabled>Checkout</button>
       </form>
       <div data-testid="order-summary" hidden>
         <h3>Order confirmed</h3>
         <div class="row"><span>Subtotal</span><span data-testid="order-subtotal"></span></div>
         <div class="row"><span>Shipping</span><span data-testid="order-shipping"></span></div>
+        <div class="row" data-testid="order-discount-row" hidden><span>Discount</span><span data-testid="order-discount"></span></div>
         <div class="row total"><span>Total</span><span data-testid="order-total"></span></div>
       </div>
       <p class="error" data-testid="error" hidden></p>
@@ -94,6 +98,8 @@
         const order = await api("POST", "/api/checkout", checkoutRequest());
         $("order-subtotal").textContent = money(order.subtotal);
         $("order-shipping").textContent = money(order.shipping);
+        $("order-discount").textContent = `−${money(order.discount)}`;
+        $("order-discount-row").hidden = order.discount === 0;
         $("order-total").textContent = money(order.total);
         $("order-summary").hidden = false;
       } catch (err) {
@@ -103,7 +109,8 @@
     }
 
     function checkoutRequest() {
-      return { cartId };
+      const discountCode = $("discount-input").value.trim();
+      return discountCode ? { cartId, discountCode } : { cartId };
     }
 
     async function init() {
