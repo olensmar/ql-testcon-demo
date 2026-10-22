@@ -44,9 +44,7 @@ git -C "$WT" add -A
 git -C "$WT" commit -q -m "feat(checkout): add discount codes" \
   -m "Customers can enter a discount code at checkout. SAVE10 and WELCOME20 take a percentage off the order. Includes unit, API and E2E tests."
 if $TWO_BUGS; then
-  # The order total ignores the discount; E2E only reaches this assertion once the discount is right.
-  sed -i '' 's|\$("order-total").textContent = money(order.total);|$("order-total").textContent = money(order.subtotal + order.shipping);|' \
-    "$WT/app/public/index.html"
+  git -C "$WT" apply "$ROOT/demo/second-bug.patch"
   git -C "$WT" commit -qam "feat(checkout): show order total in summary"
 fi
 git -C "$WT" push -q -f origin "HEAD:refs/heads/$BRANCH"

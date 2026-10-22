@@ -1,0 +1,13 @@
+diff --git a/app/public/index.html b/app/public/index.html
+index 30a990a..a12bdbc 100644
+--- a/app/public/index.html
++++ b/app/public/index.html
+@@ -100,7 +100,7 @@
+         $("order-shipping").textContent = money(order.shipping);
+         $("order-discount").textContent = `−${money(order.discount)}`;
+         $("order-discount-row").hidden = order.discount === 0;
+-        $("order-total").textContent = money(order.total);
++        $("order-total").textContent = money(order.subtotal + order.shipping);
+         $("order-summary").hidden = false;
+       } catch (err) {
+         $("error").textContent = err.message;
