@@ -40,8 +40,8 @@ async function runLoop(prNumber: number) {
   const diff = await github.getPrDiff(prNumber);
   banner(`AI quality loop · PR #${pr.number}`, `${pr.title} · ${pr.headRefOid.slice(0, 7)}`);
   log.info(`${pr.files.length} files changed: ${pr.files.map((f) => f.path).join(", ")}`);
-  await github.setStatus(pr.headRefOid, "pending", "AI quality loop running…");
   const worktree = await prepareWorktree(pr);
+  await github.setStatus(pr.headRefOid, "pending", "AI quality loop running…");
 
   // 1 · Select ------------------------------------------------------------------------------
   banner("1 · Select", "intelligent test selection");
@@ -103,10 +103,14 @@ async function runLoop(prNumber: number) {
     remediations.push(remediation);
     const newSha = (await git("git", ["rev-parse", "HEAD"], { cwd: worktree })).stdout.trim();
     if (remediation.committed && newSha !== headSha) {
-      await git("git", ["push", "origin", `HEAD:refs/heads/${pr.headRefName}`], { cwd: worktree });
-      log.ok(`pushed ${newSha.slice(0, 7)} to ${pr.headRefName}`);
-      headSha = newSha;
-      currentDiff = await github.getPrDiff(pr.number);
+      const pushed = await pushFix(worktree, pr.headRefName);
+      if (!pushed) {
+        remediation.action = "escalated";
+        remediation.summary += "\n\nThe fix could not be pushed: the branch changed and the fix doesn't rebase cleanly.";
+      } else {
+        headSha = pushed;
+        currentDiff = await github.getPrDiff(pr.number);
+      }
     }
     for (const workflow of remediation.quarantine) await quarantine(workflow);
     log.info(`${remediation.action}: ${remediation.summary.split("\n")[0]}`);
@@ -166,13 +170,47 @@ async function writeManifest(prNumber: number, spend: SpendReport): Promise<stri
   return file;
 }
 
-/** Check out the PR head in its own worktree, for Triage to read and the Remediator to edit. */
+/**
+ * Check out the PR branch in its own worktree, for Triage to read and the Remediator to edit.
+ * Uses the branch tip from git, which can be ahead of the head SHA the GitHub API reports right
+ * after a push, and updates pr.headRefOid to match.
+ */
 async function prepareWorktree(pr: github.PullRequest): Promise<string> {
   const dir = join(REPO_ROOT, ".worktrees", `pr-${pr.number}`);
   await git("git", ["fetch", "-q", "origin", pr.headRefName], { cwd: REPO_ROOT });
+  const tip = (await git("git", ["rev-parse", "FETCH_HEAD"], { cwd: REPO_ROOT })).stdout.trim();
+  if (tip !== pr.headRefOid) {
+    log.info(`GitHub reports ${pr.headRefOid.slice(0, 7)}, branch is at ${tip.slice(0, 7)}: using the branch`);
+    pr.headRefOid = tip;
+  }
   if (existsSync(dir)) await git("git", ["worktree", "remove", "--force", dir], { cwd: REPO_ROOT });
-  await git("git", ["worktree", "add", "-q", "-B", `demo/pr-${pr.number}`, dir, pr.headRefOid], { cwd: REPO_ROOT });
+  await git("git", ["worktree", "add", "-q", "-B", `demo/pr-${pr.number}`, dir, tip], { cwd: REPO_ROOT });
   return dir;
+}
+
+/**
+ * Pushes the Remediator's commit to the PR branch. If someone pushed to the branch meanwhile,
+ * rebases the fix onto it first. Returns the pushed SHA, or undefined if the rebase conflicts.
+ */
+async function pushFix(worktree: string, branch: string): Promise<string | undefined> {
+  const run = (...args: string[]) => git("git", args, { cwd: worktree });
+  await run("fetch", "-q", "origin", branch);
+  const remote = (await run("rev-parse", "FETCH_HEAD")).stdout.trim();
+  const upToDate = await run("merge-base", "--is-ancestor", remote, "HEAD").then(() => true, () => false);
+  if (!upToDate) {
+    log.info(`${branch} moved to ${remote.slice(0, 7)} on GitHub: rebasing the fix onto it`);
+    try {
+      await run("rebase", "-q", remote);
+    } catch {
+      await run("rebase", "--abort").catch(() => {});
+      log.fail(`the fix conflicts with ${remote.slice(0, 7)}: not pushing`);
+      return undefined;
+    }
+  }
+  await run("push", "-q", "origin", `HEAD:refs/heads/${branch}`);
+  const sha = (await run("rev-parse", "HEAD")).stdout.trim();
+  log.ok(`pushed ${sha.slice(0, 7)} to ${branch}`);
+  return sha;
 }
 
 /** Labels a workflow quarantine=true in Testkube: the repo's YAML plus the label, keeping live config defaults. */
