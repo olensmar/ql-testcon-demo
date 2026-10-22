@@ -100,7 +100,7 @@
         $("order-shipping").textContent = money(order.shipping);
         $("order-discount").textContent = `−${money(order.discount)}`;
         $("order-discount-row").hidden = order.discount === 0;
-        $("order-total").textContent = money(order.total);
+        $("order-total").textContent = money(order.subtotal + order.shipping);
         $("order-summary").hidden = false;
       } catch (err) {
         $("error").textContent = err.message;
