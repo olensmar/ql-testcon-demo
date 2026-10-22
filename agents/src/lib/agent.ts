@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { query, type EffortLevel, type ModelUsage } from "@anthropic-ai/claude-agent-sdk";
 import { z } from "zod";
-import { testkubeMcpServer } from "./testkube.ts";
+import { TESTKUBE, testkubeMcpServer } from "./testkube.ts";
 import { AgentLog } from "./ui.ts";
 
 export interface AgentSpec<T> {
@@ -50,13 +50,32 @@ function jsonSchema(schema: z.ZodType): Record<string, unknown> {
   return rest;
 }
 
+/** Thrown when the Testkube MCP server didn't connect at session start; the session is retried. */
+class McpUnavailable extends Error {}
+
+const MCP_ATTEMPTS = 3;
+
 export async function runAgent<T>(spec: AgentSpec<T>): Promise<AgentResult<T>> {
   const log = new AgentLog(spec.name, spec.qualifier);
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await runAgentOnce(spec, log);
+    } catch (err) {
+      if (!(err instanceof McpUnavailable) || attempt >= MCP_ATTEMPTS) throw err;
+      log.toolError(`${err.message}: retrying (${attempt + 1}/${MCP_ATTEMPTS})`);
+      await new Promise((r) => setTimeout(r, 2000 * attempt));
+    }
+  }
+}
+
+async function runAgentOnce<T>(spec: AgentSpec<T>, log: AgentLog): Promise<AgentResult<T>> {
   const systemPrompt = await readFile(join(PROMPT_DIR, `${spec.name}.md`), "utf8");
 
+  const abortController = new AbortController();
   const conversation = query({
     prompt: spec.prompt,
     options: {
+      abortController,
       model: spec.model,
       effort: spec.effort,
       systemPrompt,
@@ -67,7 +86,7 @@ export async function runAgent<T>(spec: AgentSpec<T>): Promise<AgentResult<T>> {
       // claude.ai account connectors, so every agent uses the same, allow-listed tools.
       mcpServers: testkubeMcpServer(),
       strictMcpConfig: true,
-      env: { ...process.env, ENABLE_CLAUDEAI_MCP_SERVERS: "false" },
+      env: { ...process.env, ENABLE_CLAUDEAI_MCP_SERVERS: "false", MCP_TIMEOUT: "60000" },
       settingSources: [],
       cwd: spec.cwd,
       maxTurns: spec.maxTurns,
@@ -76,7 +95,14 @@ export async function runAgent<T>(spec: AgentSpec<T>): Promise<AgentResult<T>> {
   });
 
   for await (const message of conversation) {
-    if (message.type === "assistant") {
+    if (message.type === "system" && message.subtype === "init") {
+      // Fail fast (and retry) rather than let the agent work without its Testkube tools.
+      const testkube = message.mcp_servers.find((m) => m.name === TESTKUBE);
+      if (testkube?.status !== "connected") {
+        abortController.abort();
+        throw new McpUnavailable(`Testkube MCP server ${testkube?.status ?? "missing"}`);
+      }
+    } else if (message.type === "assistant") {
       for (const block of message.message.content) {
         if (block.type === "text") log.think(block.text);
         if (block.type === "tool_use" && block.name !== "StructuredOutput") {
