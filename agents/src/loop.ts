@@ -26,6 +26,8 @@ import { AgentLog, banner, colors as c, statusIcon } from "./lib/ui.ts";
 const git = promisify(execFile);
 const REPO_ROOT = resolve(import.meta.dirname, "..", "..");
 const log = new AgentLog("loop");
+/** Max fix rounds (triage + remediate + re-run) before the Gate decides on what it has. */
+const MAX_ROUNDS = Number(process.env.MAX_ROUNDS ?? 2);
 
 type Execution = ExecutionReport["executions"][number] & { url?: string };
 
@@ -47,63 +49,86 @@ async function runLoop(prNumber: number) {
   printPlan(plan);
   await github.comment(pr.number, planComment(plan));
 
-  // 2 · Execute ------------------------------------------------------------------------------
-  banner("2 · Execute", `Testkube on Kubernetes @ ${pr.headRefOid.slice(0, 7)}`);
-  const initial = await withUrls(track("executor", await executePlan(plan, pr.headRefOid, pr.number, "initial")));
-  printExecutions(initial);
-  await github.comment(pr.number, executionComment("Test run", pr.headRefOid, initial));
-
+  // 2 → 3 → 4 → back to 2: execute, and while something fails, triage + remediate and re-run
+  // the same plan at the new commit. Bounded by MAX_ROUNDS fix rounds; then the Gate decides.
   let headSha = pr.headRefOid;
-  let triage: TriageReport[] = [];
-  let remediation: RemediationReport | undefined;
-  let verification: Execution[] | undefined;
-  const failures = initial.filter((e) => e.status !== "passed");
+  let currentDiff = diff;
+  let activePlan = plan;
+  const runs: Array<{ round: number; revision: string; executions: Execution[] }> = [];
+  const triageRounds: TriageReport[][] = [];
+  const remediations: RemediationReport[] = [];
+  let outcome: "all-passed" | "rounds-exhausted" | "escalated" | "nothing-left-to-run" = "all-passed";
 
-  if (failures.length > 0) {
+  for (let round = 1; ; round++) {
+    // 2 · Execute ----------------------------------------------------------------------------
+    const quarantined = plan.selected.length - activePlan.selected.length;
+    banner(
+      round === 1 ? "2 · Execute" : `2 · Execute · round ${round}`,
+      `Testkube on Kubernetes @ ${headSha.slice(0, 7)}${quarantined ? ` · ${quarantined} quarantined workflow(s) skipped` : ""}`,
+    );
+    const phase = round === 1 ? "initial" : `round ${round}`;
+    const executions = await withUrls(track("executor", await executePlan(activePlan, headSha, pr.number, phase)));
+    printExecutions(executions);
+    await github.comment(pr.number, executionComment(round === 1 ? "Test run" : `Re-run (round ${round})`, headSha, executions));
+    runs.push({ round, revision: headSha, executions });
+
+    const failures = executions.filter((e) => e.status !== "passed");
+    if (failures.length === 0) break;
+    if (round > MAX_ROUNDS) {
+      log.fail(`still failing after ${MAX_ROUNDS} fix round(s): handing over to the Gate`);
+      outcome = "rounds-exhausted";
+      break;
+    }
+
     // 3 · Triage ----------------------------------------------------------------------------
     banner("3 · Triage", `${failures.length} failed execution${failures.length > 1 ? "s" : ""}, analysed in parallel`);
+    const prAtHead = { ...pr, headRefOid: headSha };
     const configFor = (workflow: string) => ({
-      ...plan.selected.find((s) => s.workflow === workflow)?.config,
-      revision: pr.headRefOid,
+      ...activePlan.selected.find((s) => s.workflow === workflow)?.config,
+      revision: headSha,
       pr: String(pr.number),
     });
     const results = await Promise.all(
-      failures.map((f) => triageFailure(pr, diff, f, configFor(f.workflow), worktree)),
+      failures.map((f) => triageFailure(prAtHead, currentDiff, f, configFor(f.workflow), worktree)),
     );
-    triage = results.map((r) => track("triage", r));
+    const triage = results.map((r) => track("triage", r));
+    triageRounds.push(triage);
     for (const t of triage) printTriage(t);
     await tagTriage(triage);
-    await github.comment(pr.number, triageComment(triage, initial));
+    await github.comment(pr.number, triageComment(triage, executions));
 
     // 4 · Remediate -------------------------------------------------------------------------
-    banner("4 · Remediate");
-    remediation = track("remediator", await remediate(pr, triage, worktree));
+    banner("4 · Remediate", `fix round ${round} of ${MAX_ROUNDS}`);
+    const remediation = track("remediator", await remediate(prAtHead, triage, worktree, remediations));
+    remediations.push(remediation);
     const newSha = (await git("git", ["rev-parse", "HEAD"], { cwd: worktree })).stdout.trim();
     if (remediation.committed && newSha !== headSha) {
       await git("git", ["push", "origin", `HEAD:refs/heads/${pr.headRefName}`], { cwd: worktree });
       log.ok(`pushed ${newSha.slice(0, 7)} to ${pr.headRefName}`);
       headSha = newSha;
+      currentDiff = await github.getPrDiff(pr.number);
     }
     for (const workflow of remediation.quarantine) await quarantine(workflow);
     log.info(`${remediation.action}: ${remediation.summary.split("\n")[0]}`);
     await github.comment(pr.number, remediationComment(remediation, headSha));
 
-    // 5 · Verify ----------------------------------------------------------------------------
-    const verifyPlan = { ...plan, selected: plan.selected.filter((s) => !remediation!.quarantine.includes(s.workflow)) };
-    if (remediation.action !== "escalated" && verifyPlan.selected.length > 0) {
-      const skipped = remediation.quarantine.length ? ` · skipping quarantined ${remediation.quarantine.join(", ")}` : "";
-      banner("5 · Verify", `same plan @ ${headSha.slice(0, 7)}${skipped}`);
-      verification = await withUrls(track("executor", await executePlan(verifyPlan, headSha, pr.number, "verify")));
-      printExecutions(verification);
-      await github.comment(pr.number, executionComment("Verification run", headSha, verification));
+    if (remediation.action === "escalated") {
+      outcome = "escalated";
+      break;
     }
+    activePlan = { ...activePlan, selected: activePlan.selected.filter((s) => !remediation.quarantine.includes(s.workflow)) };
+    if (activePlan.selected.length === 0) {
+      outcome = "nothing-left-to-run";
+      break;
+    }
+    log.info(`↩ back to Execute: same plan at ${headSha.slice(0, 7)}`);
   }
 
-  // 6 · Gate ----------------------------------------------------------------------------------
-  banner("6 · Gate", "release confidence");
+  // 5 · Gate ----------------------------------------------------------------------------------
+  banner("5 · Gate", "release confidence");
   const gate = track(
     "gate",
-    await reportGate(pr, headSha, { plan, initialRun: initial, triage, remediation, verificationRun: verification }),
+    await reportGate(pr, headSha, { plan, maxFixRounds: MAX_ROUNDS, outcome, runs, triageRounds, remediations }),
   );
   const passed = gate.verdict === "pass";
   const spend = buildSpend(sessions);

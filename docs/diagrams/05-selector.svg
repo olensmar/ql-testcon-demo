@@ -80,5 +80,5 @@
   <!-- footer -->
   <rect x="460" y="680" width="1100" height="70" rx="12" fill="#1C1440"/>
   <text x="1010" y="712" text-anchor="middle" font-size="19" fill="#E4E1F5">The plan is posted on the PR and handed to the Executor as JSON.</text>
-  <text x="1010" y="738" text-anchor="middle" font-size="19" fill="#E4E1F5">The verification run reuses the same plan at the fixed commit.</text>
+  <text x="1010" y="738" text-anchor="middle" font-size="19" fill="#E4E1F5">After a fix, the loop re-runs the same plan at the new commit.</text>
 </svg>

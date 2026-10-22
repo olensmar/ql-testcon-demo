@@ -29,7 +29,7 @@
 | Triage | Two Opus agents in parallel read logs and artifacts through MCP. Verdict: *product bug*, discount computed on subtotal + shipping. Show the `triage=product-bug` tag on the execution in the dashboard. |
 | Triage (flaky run) | The browse triage agent suspects a slow-catalog flake, **re-runs** the workflow to check, sees it pass on the same commit and tags it `triage=flake`. |
 | Remediate | One-line fix plus a regression unit test, committed and pushed to the PR branch. With `--flaky`, `shop-e2e-browse` also gets the label `quarantine=true` in Testkube. |
-| Verify | The same plan runs on the new SHA (quarantined workflows skipped); all green. |
+| Re-run (round 2) | The loop goes back to Execute: the same plan on the new SHA (quarantined workflows skipped); all green. If something still failed, it would triage and fix once more (`MAX_ROUNDS`, default 2) before the Gate decides. |
 | Gate | The `quality-gate` commit status turns green and a final PR comment appears (verdict, confidence, what happened). In the Testkube dashboard, filter executions by tag `pr=<n>` to show the full trail. |
 
 ## Showing the agents themselves

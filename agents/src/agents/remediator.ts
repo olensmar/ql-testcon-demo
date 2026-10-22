@@ -2,7 +2,12 @@ import { runAgent } from "../lib/agent.ts";
 import type { PullRequest } from "../lib/github.ts";
 import { RemediationReport, type TriageReport } from "../lib/schemas.ts";
 
-export function remediate(pr: PullRequest, triage: TriageReport[], worktree: string) {
+export function remediate(
+  pr: PullRequest,
+  triage: TriageReport[],
+  worktree: string,
+  previousRounds: RemediationReport[] = [],
+) {
   return runAgent({
     name: "remediator",
     model: "claude-opus-5-5",
@@ -28,6 +33,15 @@ export function remediate(pr: PullRequest, triage: TriageReport[], worktree: str
 Triage reports:
 \`\`\`json
 ${JSON.stringify(triage, null, 2)}
-\`\`\``,
+\`\`\`${
+      previousRounds.length
+        ? `
+
+Earlier fix rounds on this PR didn't make everything pass. Build on them or correct them:
+\`\`\`json
+${JSON.stringify(previousRounds, null, 2)}
+\`\`\``
+        : ""
+    }`,
   });
 }

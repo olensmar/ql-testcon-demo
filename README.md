@@ -12,7 +12,7 @@ interaction goes through the **Testkube MCP server**:
 | 2 | **Executor** | Haiku 5.5 | Runs the plan in parallel on Kubernetes (sharded Playwright, distributed k6), waits, retries infra failures |
 | 3 | **Triage** | Opus 5.5 | One per failed execution, in parallel: logs, artifacts and history; classifies the failure (product bug, test defect, flake or infra), which is recorded as a `triage` tag on the execution |
 | 4 | **Remediator** | Opus 5.5 | Fixes the code (or quarantines a flaky workflow) and commits to the PR branch |
-| 2' | **Executor** | Haiku 5.5 | Re-runs the plan at the fixed revision |
+| ↩ | **Executor** | Haiku 5.5 | The loop goes back to Execute: same plan at the fixed commit (at most `MAX_ROUNDS`=2 fix rounds) |
 | 5 | **Gate Reporter** | Sonnet 5.5 | Cross-checks every execution tagged `pr=<n>` in Testkube, decides the verdict and confidence, and sets the `quality-gate` commit status |
 
 The orchestration in [`agents/src/loop.ts`](agents/src/loop.ts) is deterministic. Each agent is
@@ -69,7 +69,7 @@ filter on these tags to see the PR's whole history.
 `chaos` config of `shop-e2e-browse`, which gives the app 3s of catalog latency on alternating
 executions. The browse test has a 2s render budget, so the next run fails and the one after passes.
 Triage confirms the flake with a re-run, the workflow gets the label `quarantine=true`, the
-verification run skips it, and the Gate doesn't block on it.
+re-run after the fix skips it, and the Gate doesn't block on it.
 
 ### Agent sessions
 
