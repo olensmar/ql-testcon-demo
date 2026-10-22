@@ -64,6 +64,8 @@ spec:
         fetch:
           - from: /data/repo/tests/e2e/blob-report
             to: /data/reports
+          - from: /data/repo/tests/e2e/test-results
+            to: /data/test-results
         container:
           env:
             - name: BASE_URL
@@ -79,4 +81,4 @@ spec:
         PLAYWRIGHT_JUNIT_OUTPUT_NAME=results/junit.xml \
           npx playwright merge-reports --reporter=list,html,junit /data/reports
       artifacts:
-        paths: ["playwright-report/**", "results/**"]
+        paths: ["playwright-report/**", "results/**", "/data/test-results/**"]

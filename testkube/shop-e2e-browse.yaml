@@ -67,4 +67,4 @@ spec:
             value: "http://{{services.shop.0.ip}}:3000"
       shell: npx playwright test browse.spec.ts
       artifacts:
-        paths: ["results/**", "test-results/**"]
+        paths: ["playwright-report/**", "results/**", "test-results/**"]
