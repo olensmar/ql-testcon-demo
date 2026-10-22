@@ -1,5 +1,34 @@
 # Demo runbook
 
+## Running a rehearsal
+
+From the repo root (`~/Dev/ql-testcon-demo`). Needs: minikube running with the Testkube runner agent
+connected, `agents/.env` with the Testkube MCP URL and API token, `gh` logged in, and `npm ci` done
+in `agents/`.
+
+1. Open a fresh demo PR. This also closes the previous demo PR and restores the Testkube workflows
+   (removes quarantine labels, turns fault injection off):
+
+   | Scenario | Command | Loop | Time | AI spend |
+   |---|---|---|---|---|
+   | Bug only | `./scripts/reset-demo.sh` | 1 fix round | ~3 min | ~$0.40 |
+   | Bug + flaky browse test | `./scripts/reset-demo.sh --flaky` | 1 fix round + quarantine | ~4 min | ~$0.80 |
+   | Two bugs (second shows after the first fix) | `./scripts/reset-demo.sh --two-bugs` | 2 fix rounds | ~5 min | ~$0.70 |
+
+   It prints the PR URL; note the number.
+2. Run the loop: `cd agents && npm run loop -- --pr <number>`.
+   Or, to show it reacting to the PR: start `cd agents && npm run watch` first, then run step 1 in a
+   second terminal; the watcher picks up the new PR within 5 seconds.
+3. Watch: the terminal, the PR page on GitHub (comments, `quality-gate` status) and the Testkube
+   dashboard (executions, filter by tag `pr=<number>`).
+4. Afterwards: the AI spend table is at the end of the terminal output and in the final PR
+   comment; `runs/pr-<number>.json` lists every agent session, the Testkube tools it could see and
+   a `claude --resume` command to open its transcript.
+
+With `--flaky`, don't run `shop-e2e-browse` between steps 1 and 2: the flake alternates by
+execution number. Run one rehearsal within the hour before going on stage, so the prompt cache is
+warm and the live run is faster and cheaper.
+
 ## The day before
 
 - [ ] `minikube status` shows it running, and the Testkube runner agent is connected (`testkube get agents` or the dashboard)

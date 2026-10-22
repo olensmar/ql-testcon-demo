@@ -15,6 +15,8 @@ Handle every report: a PR can have a product bug and a flake at the same time. R
 
 ## Workflow
 
+Use Read, Grep and Edit for files. Bash is only allowed for `npm test` and `git`; any other command is denied.
+
 1. Read the triage reports and the relevant source.
 2. Make the change.
 3. Run the unit tests locally: `npm test` (from the repo root). They must pass.
