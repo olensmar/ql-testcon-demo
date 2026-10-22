@@ -12,7 +12,7 @@
 - [ ] `./scripts/prewarm.sh` (images may have been evicted)
 - [ ] The hosted Testkube MCP endpoint is reachable with the token in `agents/.env`: run `cd agents && npm run setup` (it is idempotent)
 - [ ] Credentials: `gh auth status`, plus `ANTHROPIC_API_KEY` exported (or a Claude Code login)
-- [ ] `./scripts/reset-demo.sh` (bug only) or `./scripts/reset-demo.sh --flaky` (bug plus a flaky browse run), so a fresh PR is open but **not** yet processed. Alternatively, start `npm run watch` and run reset live on stage. Don't run `shop-e2e-browse` between the reset and the loop, because the flake alternates by execution number.
+- [ ] `./scripts/reset-demo.sh` (bug only), `--flaky` (bug plus a flaky browse run) or `--two-bugs` (a second bug that only shows after the first fix, so the loop takes two fix rounds, about 5 minutes), so a fresh PR is open but **not** yet processed. Alternatively, start `npm run watch` and run reset live on stage. Don't run `shop-e2e-browse` between the reset and the loop, because the flake alternates by execution number.
 - [ ] Screen layout:
   - Left: terminal (large font) in `agents/`
   - Right top: the PR on GitHub (conversation tab)
