@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" role="img" aria-label="How each agent is set up: runAgent in lib/agent.ts starts one Claude Code session through the Agent SDK's query(), with its own prompt, model and effort, built-in tools, permission allow-list, the hosted Testkube MCP server with unused tools hidden, and a JSON-schema output. Example: the Triage agent's call. Each session reaches only the Claude API, the hosted Testkube MCP server and the PR worktree." font-family="Nunito, 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#818CF8"/>
+    </marker>
+  </defs>
+  <text x="30" y="50" font-size="20" font-weight="700" fill="#FFAB40">EXAMPLE · agents/triage.ts</text>
+  <text x="660" y="50" font-size="20" font-weight="700" fill="#FFAB40">WHAT runAgent() SETS UP</text>
+  <rect x="30" y="70" width="590" height="606" rx="14" fill="#1C1440" stroke="#8B80D9" stroke-width="2"/>
+  <text x="54" y="106" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">runAgent({</text>
+  <text x="54" y="136" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">  name: "triage",</text>
+  <text x="54" y="166" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">  model: "claude-opus-5-5",</text>
+  <text x="54" y="196" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">  effort: "medium",</text>
+  <text x="54" y="226" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">  tools: ["Read", "Grep", "Glob"],</text>
+  <text x="54" y="256" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">  allowedTools: [</text>
+  <text x="54" y="286" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">    "Read", "Grep", "Glob",</text>
+  <text x="54" y="316" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">    ...tk(</text>
+  <text x="54" y="346" font-size="17" fill="#FFC978" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">      "get_execution_info",</text>
+  <text x="54" y="376" font-size="17" fill="#FFC978" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">      "fetch_execution_logs",</text>
+  <text x="54" y="406" font-size="17" fill="#FFC978" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">      "list_artifacts", "read_artifact",</text>
+  <text x="54" y="436" font-size="17" fill="#FFC978" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">      "query_executions",</text>
+  <text x="54" y="466" font-size="17" fill="#FFC978" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">      "run_workflow", "wait_for_executions"),</text>
+  <text x="54" y="496" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">  ],</text>
+  <text x="54" y="526" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">  schema: TriageReport,   // zod</text>
+  <text x="54" y="556" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">  cwd: worktree,          // PR checkout</text>
+  <text x="54" y="586" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">  maxTurns: 20,</text>
+  <text x="54" y="616" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">  prompt: `Triage this failed …`,</text>
+  <text x="54" y="646" font-size="17" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">})</text>
+  <text x="54" y="698" font-size="16" fill="#FFC978">orange: the Testkube MCP tools Triage may use; all others are hidden</text>
+  <rect x="660" y="70" width="910" height="470" rx="16" fill="#2B1F63" stroke="#818CF8" stroke-width="2.5"/>
+  <text x="688" y="114" font-size="26" font-weight="700" fill="#FFFFFF">runAgent(spec)</text>
+  <text x="880" y="114" font-size="19" fill="#C4BFE6">lib/agent.ts · Agent SDK query()</text>
+  <text x="688" y="144" font-size="18" fill="#C4BFE6">one short-lived Claude Code session per call</text>
+  <text x="688" y="192" font-size="16" font-weight="700" fill="#FFAB40" letter-spacing="0.5">PROMPT</text>
+  <text x="840" y="192" font-size="20" fill="#FFFFFF">prompts/&lt;agent&gt;.md as the system prompt</text>
+  <text x="688" y="231" font-size="16" font-weight="700" fill="#FFAB40" letter-spacing="0.5">MODEL</text>
+  <text x="840" y="231" font-size="20" fill="#FFFFFF">Opus · Sonnet · Haiku 5.5, effort set per agent</text>
+  <text x="688" y="270" font-size="16" font-weight="700" fill="#FFAB40" letter-spacing="0.5">TOOLS</text>
+  <text x="840" y="270" font-size="20" fill="#FFFFFF">built-ins per agent: Read · Grep · Edit · Bash(git, npm test)</text>
+  <text x="688" y="309" font-size="16" font-weight="700" fill="#FFAB40" letter-spacing="0.5">PERMISSIONS</text>
+  <text x="840" y="309" font-size="20" fill="#FFFFFF">allowedTools + dontAsk: anything else is denied</text>
+  <text x="688" y="348" font-size="16" font-weight="700" fill="#FFAB40" letter-spacing="0.5">TESTKUBE</text>
+  <text x="840" y="348" font-size="20" fill="#FFFFFF">hosted MCP over HTTP + API token · unused tools hidden</text>
+  <text x="688" y="387" font-size="16" font-weight="700" fill="#FFAB40" letter-spacing="0.5">OUTPUT</text>
+  <text x="840" y="387" font-size="20" fill="#FFFFFF">JSON schema from zod → validated, typed object</text>
+  <text x="688" y="426" font-size="16" font-weight="700" fill="#FFAB40" letter-spacing="0.5">WORKING DIR</text>
+  <text x="840" y="426" font-size="20" fill="#FFFFFF">the PR worktree (Triage, Remediator)</text>
+  <text x="688" y="465" font-size="16" font-weight="700" fill="#FFAB40" letter-spacing="0.5">GUARD</text>
+  <text x="840" y="465" font-size="20" fill="#FFFFFF">Testkube MCP not connected at start → retry ×3</text>
+  <text x="688" y="504" font-size="16" font-weight="700" fill="#FFAB40" letter-spacing="0.5">RETURNS</text>
+  <text x="840" y="504" font-size="20" fill="#FFFFFF">output · session id · tokens · cost</text>
+  <line x1="620" y1="300" x2="656" y2="300" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="660" y="575" width="910" height="200" rx="14" fill="none" stroke="#FFAB40" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="688" y="613" font-size="18" font-weight="700" fill="#FFAB40">EACH AGENT SESSION REACHES</text>
+  <text x="688" y="653" font-size="21" fill="#FFFFFF">· Claude API (its model)</text>
+  <text x="688" y="689" font-size="21" fill="#FFFFFF">· Testkube MCP, hosted</text>
+  <text x="688" y="725" font-size="21" fill="#FFFFFF">· the PR worktree on disk</text>
+  <text x="1110" y="653" font-size="19" fill="#A49DD0">and nothing else:</text>
+  <text x="1110" y="689" font-size="19" fill="#A49DD0">· no web tools · no other MCP servers</text>
+  <text x="1110" y="725" font-size="19" fill="#A49DD0">· no claude.ai connectors</text>
+  <text x="1110" y="761" font-size="19" fill="#A49DD0">· no project or user settings</text>
+  <line x1="1115" y1="540" x2="1115" y2="571" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+</svg>

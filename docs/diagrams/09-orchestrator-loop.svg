@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 790" role="img" aria-label="How the quality loop runs: runLoop in loop.ts is plain TypeScript that calls the five agents in order, with the fix loop as a bounded for-loop, and performs every side effect itself (git, Testkube tags and quarantine, GitHub status and comments). It is started on demand or by a watcher, and writes to the terminal, GitHub and a run manifest." font-family="Nunito, 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#818CF8"/>
+    </marker>
+  </defs>
+  <text x="30" y="50" font-size="20" font-weight="700" fill="#FFAB40">TRIGGERS</text>
+  <text x="450" y="50" font-size="20" font-weight="700" fill="#FFAB40">ORCHESTRATION</text>
+  <text x="1220" y="50" font-size="20" font-weight="700" fill="#FFAB40">OUTPUTS</text>
+  <rect x="30" y="70" width="370" height="100" rx="14" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <text x="52" y="108" font-size="21" font-weight="700" fill="#FFFFFF" font-family="'SF Mono', Menlo, monospace">npm run loop -- --pr 12</text>
+  <text x="52" y="140" font-size="17" fill="#C4BFE6">one PR, on demand</text>
+  <rect x="30" y="190" width="370" height="100" rx="14" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <text x="52" y="228" font-size="21" font-weight="700" fill="#FFFFFF" font-family="'SF Mono', Menlo, monospace">npm run watch</text>
+  <text x="52" y="260" font-size="17" fill="#C4BFE6">polls GitHub every 5 s, runs each new PR</text>
+  <polyline points="400,120 425,120 425,180 446,180" fill="none" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <polyline points="400,240 425,240 425,180" fill="none" stroke="#818CF8" stroke-width="2.5"/>
+  <text x="30" y="350" font-size="20" font-weight="700" fill="#FFAB40">USES · lib/</text>
+  <rect x="30" y="370" width="370" height="84" rx="14" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <text x="52" y="404" font-size="19" font-weight="700" fill="#FFFFFF" font-family="'SF Mono', Menlo, monospace">github.ts</text>
+  <text x="382" y="404" text-anchor="end" font-size="16" font-weight="700" fill="#FFAB40">→ GitHub</text>
+  <text x="52" y="433" font-size="16" fill="#C4BFE6">PR, diff, comments, status (gh CLI)</text>
+  <rect x="30" y="468" width="370" height="84" rx="14" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <text x="52" y="502" font-size="19" font-weight="700" fill="#FFFFFF" font-family="'SF Mono', Menlo, monospace">testkube.ts</text>
+  <text x="382" y="502" text-anchor="end" font-size="16" font-weight="700" fill="#FFAB40">→ Testkube</text>
+  <text x="52" y="531" font-size="16" fill="#C4BFE6">MCP calls made by code, not agents</text>
+  <rect x="30" y="566" width="370" height="84" rx="14" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <text x="52" y="600" font-size="19" font-weight="700" fill="#FFFFFF" font-family="'SF Mono', Menlo, monospace">schemas.ts</text>
+  <text x="52" y="629" font-size="16" fill="#C4BFE6">zod contracts between agents</text>
+  <rect x="30" y="664" width="370" height="84" rx="14" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <text x="52" y="698" font-size="19" font-weight="700" fill="#FFFFFF" font-family="'SF Mono', Menlo, monospace">spend.ts · ui.ts</text>
+  <text x="52" y="727" font-size="16" fill="#C4BFE6">AI spend · colour-coded terminal</text>
+  <line x1="446" y1="560" x2="404" y2="560" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="450" y="70" width="720" height="690" rx="16" fill="#1C1440" stroke="#818CF8" stroke-width="2.5"/>
+  <text x="478" y="114" font-size="26" font-weight="700" fill="#FFFFFF">runLoop(pr)</text>
+  <text x="648" y="114" font-size="19" fill="#C4BFE6">loop.ts · plain TypeScript</text>
+  <text x="478" y="146" font-size="18" fill="#A49DD0">control flow, guardrails and side effects live here, not in a model</text>
+  <text x="480" y="205" font-size="19" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">prepareWorktree(pr)</text>
+  <rect x="980" y="182" width="170" height="31" rx="15.5" fill="none" stroke="#6E64B0" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="1065" y="204" text-anchor="middle" font-size="17" fill="#C4BFE6">git</text>
+  <text x="480" y="247" font-size="19" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">plan = selectTests(pr, diff)</text>
+  <rect x="980" y="224" width="170" height="31" rx="15.5" fill="#2B1F63" stroke="#818CF8" stroke-width="2"/>
+  <text x="1065" y="246" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Selector</text>
+  <text x="480" y="289" font-size="19" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">for (round = 1; ; round++) {</text>
+  <text x="512" y="331" font-size="19" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">runs = executePlan(plan, sha)</text>
+  <rect x="980" y="308" width="170" height="31" rx="15.5" fill="#2B1F63" stroke="#818CF8" stroke-width="2"/>
+  <text x="1065" y="330" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Executor</text>
+  <text x="512" y="373" font-size="19" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">if (allPassed || round &gt; MAX) break</text>
+  <text x="512" y="415" font-size="19" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">triage = parallel(triageFailure)</text>
+  <rect x="980" y="392" width="170" height="31" rx="15.5" fill="#2B1F63" stroke="#818CF8" stroke-width="2"/>
+  <text x="1065" y="414" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Triage ×N</text>
+  <text x="512" y="457" font-size="19" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">tagTriage(triage)</text>
+  <rect x="980" y="434" width="170" height="31" rx="15.5" fill="none" stroke="#6E64B0" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="1065" y="456" text-anchor="middle" font-size="17" fill="#C4BFE6">Testkube MCP</text>
+  <text x="512" y="499" font-size="19" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">fix = remediate(pr, triage)</text>
+  <rect x="980" y="476" width="170" height="31" rx="15.5" fill="#2B1F63" stroke="#818CF8" stroke-width="2"/>
+  <text x="1065" y="498" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Remediator</text>
+  <text x="512" y="541" font-size="19" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">sha = pushFix(); quarantine()</text>
+  <rect x="980" y="518" width="170" height="31" rx="15.5" fill="none" stroke="#6E64B0" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="1065" y="540" text-anchor="middle" font-size="17" fill="#C4BFE6">git · MCP</text>
+  <text x="480" y="583" font-size="19" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">}</text>
+  <text x="480" y="625" font-size="19" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">gate = reportGate(pr, sha, summary)</text>
+  <rect x="980" y="602" width="170" height="31" rx="15.5" fill="#2B1F63" stroke="#818CF8" stroke-width="2"/>
+  <text x="1065" y="624" text-anchor="middle" font-size="17" font-weight="700" fill="#FFFFFF">Gate</text>
+  <text x="480" y="667" font-size="19" fill="#E4E1F5" font-family="'SF Mono', Menlo, monospace" xml:space="preserve">setStatus(); comment(); writeManifest()</text>
+  <rect x="980" y="644" width="170" height="31" rx="15.5" fill="none" stroke="#6E64B0" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="1065" y="666" text-anchor="middle" font-size="17" fill="#C4BFE6">gh · file</text>
+  <path d="M 470 272 L 463 272 L 463 588 L 470 588" fill="none" stroke="#FFAB40" stroke-width="2.5"/>
+  <line x1="470" y1="705" x2="1150" y2="705" stroke="#4A3F85" stroke-width="1.5"/>
+  <text x="478" y="738" font-size="18" fill="#FFAB40">↻ the for-loop is the fix loop · MAX = 2 fix rounds</text>
+  <rect x="930" y="723" width="20" height="16" rx="8" fill="#2B1F63" stroke="#818CF8" stroke-width="1.5"/>
+  <text x="956" y="737" font-size="16" fill="#C4BFE6">agent</text>
+  <rect x="1020" y="723" width="20" height="16" rx="8" fill="none" stroke="#6E64B0" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="1046" y="737" font-size="16" fill="#C4BFE6">plain code</text>
+  <rect x="1220" y="70" width="350" height="128" rx="14" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <text x="1242" y="108" font-size="21" font-weight="700" fill="#FFFFFF">Terminal</text>
+  <text x="1242" y="140" font-size="17" fill="#C4BFE6">colour-coded stream of every agent:</text>
+  <text x="1242" y="166" font-size="17" fill="#C4BFE6">tool calls, verdicts, AI spend</text>
+  <rect x="1220" y="218" width="350" height="128" rx="14" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <text x="1242" y="256" font-size="21" font-weight="700" fill="#FFFFFF">GitHub</text>
+  <text x="1242" y="288" font-size="17" fill="#C4BFE6">a comment per step, fix commits,</text>
+  <text x="1242" y="314" font-size="17" fill="#C4BFE6">quality-gate commit status</text>
+  <rect x="1220" y="366" width="350" height="128" rx="14" fill="#221848" stroke="#8B80D9" stroke-width="2"/>
+  <text x="1242" y="404" font-size="21" font-weight="700" fill="#FFFFFF" font-family="'SF Mono', Menlo, monospace">runs/pr-&lt;n&gt;.json</text>
+  <text x="1242" y="436" font-size="17" fill="#C4BFE6">per session: agent, tools it could see,</text>
+  <text x="1242" y="462" font-size="17" fill="#C4BFE6">tokens, cost, transcript to resume</text>
+  <line x1="1170" y1="250" x2="1216" y2="250" stroke="#818CF8" stroke-width="2.5" marker-end="url(#arrow)"/>
+</svg>
