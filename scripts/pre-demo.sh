@@ -39,7 +39,7 @@ else
 fi
 
 step "3/5 Leftovers from earlier runs"
-open_prs=$(gh pr list -R "$REPO" --head feature/discount-codes --state open --json number -q '.[].number')
+open_prs=$(gh pr list -R "$REPO" --state open --json number -q '.[].number')  # demo PRs and warm-up PRs
 for n in $open_prs; do
   gh pr close "$n" -R "$REPO" --comment "Closed before a new demo run." >/dev/null 2>&1
 done

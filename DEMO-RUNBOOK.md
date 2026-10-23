@@ -28,6 +28,28 @@ From the repo root (`~/Dev/ql-testcon-demo`).
    comment; `runs/pr-<number>.json` lists every agent session, the Testkube tools it could see and
    a `claude --resume` command to open its transcript.
 
+### Warm-up: a one-line PR made live on GitHub (~2 min, ~$0.30)
+
+A small first demo before the scripted scenarios: you make the change in the browser, and the
+loop picks it up. It runs only 2 of the 6 workflows (the browser E2E suites), and one test fails.
+
+1. In a terminal: `cd agents && npm run watch` (after `./scripts/pre-demo.sh`).
+2. On GitHub, open `app/public/index.html` in olensmar/ql-testcon-demo and click the pencil icon.
+3. Find line 69 (in `renderCart`):
+   `const count = cart.items.reduce((n, i) => n + i.quantity, 0);`
+   and change it to:
+   `const count = cart.items.length;`
+4. **Commit changes…** → message "Simplify cart badge count" → choose **Create a new branch for this
+   commit and start a pull request** → **Propose changes** → **Create pull request**.
+5. Within 5 seconds the watcher starts the loop. Expected: the Selector runs only `shop-e2e-browse`
+   and `shop-e2e-checkout` and skips unit, API and load ("client-side rendering only"). Browse passes,
+   and the checkout test that adds the same plushie twice fails (badge shows 2, expects 3). Triage
+   pinpoints `index.html:69` as a product bug, the Remediator reverts the line, round 2 is green and
+   the Gate passes.
+
+Why it lands well: the unit and API tests would all pass; only an end-to-end test that adds the
+same item twice catches it, and the agents only ran the tests that could.
+
 With `--flaky`, don't run `shop-e2e-browse` between steps 1 and 2: the flake alternates by
 execution number. Run one rehearsal within the hour before going on stage, so the prompt cache is
 warm and the live run is faster and cheaper.
