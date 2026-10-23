@@ -64,6 +64,26 @@ Every execution is tagged with `pr` and `revision` (through the workflows' `exec
 expressions), and failed executions also get a `triage` tag. In the Testkube dashboard you can
 filter on these tags to see the PR's whole history.
 
+### Testkube backends: hosted MCP (default) or CLI
+
+Set `TESTKUBE_BACKEND=cli` in `agents/.env` to drive Testkube through the `testkube` CLI instead
+of the hosted MCP server. The orchestrator then runs a small in-process MCP server
+([`agents/src/lib/testkube-cli.ts`](agents/src/lib/testkube-cli.ts)) with the same 14 tools, so the
+agents, prompts and allow-lists don't change. `TK_CLI_HOME` / `TK_CLI_KUBECONFIG` point the CLI at
+another Testkube (for example Testkube Open Source in a kind cluster) without touching your
+default CLI context; see `agents/.env.example`.
+
+| | Hosted MCP | CLI → control plane | CLI → Testkube Open Source |
+|---|---|---|---|
+| Agent tools | ✓ | ✓ (same tools) | ✓ (same tools) |
+| App as a per-run service, sharding, distributed k6 | ✓ | ✓ | ✗ standalone agent rejects `services` and `parallel` |
+| Workflow health for the Selector | ✓ Insights | computed from recent runs | computed from recent runs |
+| Logs of a parallel worker / shard | ✓ | ✗ combined log only | n/a |
+| Dashboard links in PR comments | ✓ | ✗ | ✗ no dashboard |
+
+So the CLI backend works against Open Source, but the demo's workflows rely on `services` and
+`parallel`, which the Open Source (standalone) agent doesn't run.
+
 ### The controllable flake
 
 `./scripts/reset-demo.sh --flaky` (or `npm run flake -- on|off` in `agents/`) sets the

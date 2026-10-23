@@ -16,7 +16,7 @@ import { selectTests } from "./agents/selector.ts";
 import { triageFailure } from "./agents/triage.ts";
 import * as github from "./lib/github.ts";
 import type { ExecutionReport, RemediationReport, TestPlan, TriageReport } from "./lib/schemas.ts";
-import { connectTestkube } from "./lib/testkube.ts";
+import { BACKEND, connectTestkube } from "./lib/testkube.ts";
 import { sessions } from "./lib/agent.ts";
 import { buildSpend, printSpend, spendMarkdown, type SpendReport } from "./lib/spend.ts";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -38,7 +38,10 @@ async function runLoop(prNumber: number) {
 
   const pr = await github.getPr(prNumber);
   const diff = await github.getPrDiff(prNumber);
-  banner(`AI quality loop · PR #${pr.number}`, `${pr.title} · ${pr.headRefOid.slice(0, 7)}`);
+  banner(
+    `AI quality loop · PR #${pr.number}`,
+    `${pr.title} · ${pr.headRefOid.slice(0, 7)} · Testkube via ${BACKEND === "cli" ? "CLI" : "hosted MCP"}`,
+  );
   log.info(`${pr.files.length} files changed: ${pr.files.map((f) => f.path).join(", ")}`);
   const worktree = await prepareWorktree(pr);
   await github.setStatus(pr.headRefOid, "pending", "AI quality loop running…");
@@ -296,7 +299,10 @@ function printTriage(t: TriageReport) {
 
 // ---- PR comments ----------------------------------------------------------------------------
 
-const AGENT_FOOTER = "\n\n<sub>🤖 Posted by the AI quality loop · Claude Agent SDK + Testkube MCP</sub>";
+/** Workflow name, linked to its Testkube dashboard page when there is one (not with the CLI backend). */
+const link = (workflow: string, url?: string) => (url ? `[\`${workflow}\`](${url})` : `\`${workflow}\``);
+
+const AGENT_FOOTER = `\n\n<sub>🤖 Posted by the AI quality loop · Claude Agent SDK + Testkube ${BACKEND === "cli" ? "CLI" : "MCP"}</sub>`;
 
 function planComment(plan: TestPlan): string {
   const rows = [
@@ -314,7 +320,7 @@ ${rows.join("\n")}${AGENT_FOOTER}`;
 
 function executionComment(title: string, sha: string, executions: Execution[]): string {
   const rows = executions.map(
-    (e) => `| ${statusIcon(e.status)} | [\`${e.workflow}\`](${e.url}) | ${e.status} | ${e.duration} | ${e.note || ""} |`,
+    (e) => `| ${statusIcon(e.status)} | ${link(e.workflow, e.url)} | ${e.status} | ${e.duration} | ${e.note || ""} |`,
   );
   const failed = executions.filter((e) => e.status !== "passed").length;
   return `### 🚀 ${title} @ \`${sha.slice(0, 7)}\`: ${failed === 0 ? "all passed" : `${failed} failed`}
@@ -329,7 +335,7 @@ ${rows.join("\n")}${AGENT_FOOTER}`;
 function triageComment(reports: TriageReport[], executions: Execution[]): string {
   const sections = reports.map((t) => {
     const url = executions.find((e) => e.executionId === t.executionId)?.url;
-    return `#### [\`${t.workflow}\`](${url}): **${t.classification}** (${Math.round(t.confidence * 100)}% confidence)
+    return `#### ${link(t.workflow, url)}: **${t.classification}** (${Math.round(t.confidence * 100)}% confidence)
 
 **Root cause:** ${t.rootCause}
 

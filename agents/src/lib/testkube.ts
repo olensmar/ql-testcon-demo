@@ -3,6 +3,7 @@ import { join } from "node:path";
 import type { McpServerConfig } from "@anthropic-ai/claude-agent-sdk";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { CliTestkubeClient, cliMcpServer } from "./testkube-cli.ts";
 
 /** Name the Testkube MCP server is registered under; tools appear as mcp__testkube__<tool>. */
 export const TESTKUBE = "testkube";
@@ -13,6 +14,20 @@ export const tk = (...tools: string[]) => tools.map((t) => `mcp__${TESTKUBE}__${
 // Credentials live in agents/.env (see .env.example); real environment variables win.
 const ENV_FILE = join(import.meta.dirname, "..", "..", ".env");
 if (existsSync(ENV_FILE)) process.loadEnvFile(ENV_FILE);
+
+/**
+ * How the agents reach Testkube: "mcp" (default) uses the MCP server hosted by the Testkube control
+ * plane; "cli" drives the testkube CLI through an in-process MCP server with the same tools, which
+ * also works with a Testkube Open Source runner (see testkube-cli.ts).
+ */
+export const BACKEND: "mcp" | "cli" = process.env.TESTKUBE_BACKEND?.toLowerCase() === "cli" ? "cli" : "mcp";
+
+/** What orchestrator code needs from either backend. */
+export interface TestkubeApi {
+  call<T = any>(tool: string, args?: Record<string, unknown>): Promise<T>;
+  toolNames(): Promise<string[]>;
+  close(): Promise<void>;
+}
 
 /**
  * The Testkube MCP server hosted by the Testkube control plane, e.g.
@@ -45,19 +60,21 @@ export function testkubeToolNames(): Promise<string[]> {
 }
 
 export function testkubeMcpServer(): Record<string, McpServerConfig> {
+  if (BACKEND === "cli") return { [TESTKUBE]: cliMcpServer(TESTKUBE) };
   const { url, headers } = endpoint();
   return { [TESTKUBE]: { type: "http", url, headers } };
 }
 
-/** A plain (no-LLM) MCP client to the same endpoint, used by setup.ts, flake.ts and loop.ts. */
-export async function connectTestkube(): Promise<TestkubeClient> {
+/** A plain (no-LLM) client for the same tools, used by setup.ts, flake.ts and loop.ts. */
+export async function connectTestkube(): Promise<TestkubeApi> {
+  if (BACKEND === "cli") return new CliTestkubeClient();
   const { url, headers } = endpoint();
   const client = new Client({ name: "ql-testcon-demo", version: "1.0.0" });
   await client.connect(new StreamableHTTPClientTransport(new URL(url), { requestInit: { headers } }));
   return new TestkubeClient(client);
 }
 
-export class TestkubeClient {
+export class TestkubeClient implements TestkubeApi {
   private client: Client;
 
   constructor(client: Client) {
@@ -84,7 +101,7 @@ export class TestkubeClient {
     return (await this.client.listTools()).tools.map((t) => t.name);
   }
 
-  close() {
-    return this.client.close();
+  async close() {
+    await this.client.close();
   }
 }
